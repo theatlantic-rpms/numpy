@@ -1,0 +1,30 @@
+--- numpy-0.9.4/numpy/distutils/fcompiler/gnu.py.orig	2006-02-01 14:01:20.000000000 -0500
++++ numpy-0.9.4/numpy/distutils/fcompiler/gnu.py	2006-02-01 17:28:33.000000000 -0500
+@@ -29,7 +29,7 @@
+         'compiler_f77' : [fc_exe,"-Wall","-fno-second-underscore"],
+         'compiler_f90' : None,
+         'compiler_fix' : None,
+-        'linker_so'    : [fc_exe,"-Wall"],
++        'linker_so'    : [fc_exe,"-shared", "-Wall"],
+         'archiver'     : ["ar", "-cr"],
+         'ranlib'       : ["ranlib"],
+         'linker_exe'   : [fc_exe,"-Wall"]
+@@ -211,7 +211,8 @@
+ class Gnu95FCompiler(GnuFCompiler):
+ 
+     compiler_type = 'gnu95'
+-    version_pattern = r'GNU Fortran 95 \(GCC (?P<version>[^\s*\)]+)'
++#    version_pattern = r'GNU Fortran 95 \(GCC (?P<version>[^\s*\)]+)'
++    version_pattern = r'GNU Fortran 95 \(GCC\)?\s*(?P<version>[0-9.]+)'
+ 
+     # 'gfortran --version' results:
+     # Debian: GNU Fortran 95 (GCC 4.0.3 20051023 (prerelease) (Debian 4.0.2-3))
+@@ -224,6 +225,6 @@
+         'compiler_f77' : [fc_exe,"-Wall","-ffixed-form","-fno-second-underscore"],
+         'compiler_f90' : [fc_exe,"-Wall","-fno-second-underscore"],
+         'compiler_fix' : [fc_exe,"-Wall","-ffixed-form","-fno-second-underscore"],
+-        'linker_so'    : [fc_exe,"-Wall"],
++        'linker_so'    : [fc_exe,"-shared", "-Wall"],
+         'archiver'     : ["ar", "-cr"],
+         'ranlib'       : ["ranlib"],
+         'linker_exe'   : [fc_exe,"-Wall"]
