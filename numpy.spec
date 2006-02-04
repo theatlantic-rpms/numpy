@@ -66,3 +66,4 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Feb  2 2006 Ignacio Vazquez-Abrams <ivazquez@ivazquez.net> 0.9.4-1
 - Initial RPM release
+- Added gfortran patch from Neal Becker
