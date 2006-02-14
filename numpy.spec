@@ -3,7 +3,7 @@
 
 Name:           numpy
 Version:        0.9.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
@@ -64,6 +64,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/%{name}
 
 %changelog
+* Mon Feb 13 2006 Ignacio Vazquez-Abrams <ivazquez@ivazquez.net> 0.9.4-2
+- Rebuild for Fedora Extras 5
+
 * Thu Feb  2 2006 Ignacio Vazquez-Abrams <ivazquez@ivazquez.net> 0.9.4-1
 - Initial RPM release
 - Added gfortran patch from Neal Becker
