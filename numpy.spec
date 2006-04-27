@@ -2,7 +2,7 @@
 %{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 
 Name:           numpy
-Version:        0.9.5
+Version:        0.9.6
 Release:        1%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
@@ -35,7 +35,7 @@ This package also contains a version of f2py that works properly with it.
 %patch1 -p1 -b .gfortran
 
 %build
-BLAS=%{_libdir} LAPACK=%{_libdir} CFLAGS="$RPM_OPT_FLAGS" %{__python} setup.py build
+FFTW=%{_libdir} BLAS=%{_libdir} LAPACK=%{_libdir} CFLAGS="$RPM_OPT_FLAGS" %{__python} setup.py build
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -64,6 +64,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/%{name}
 
 %changelog
+* Wed Apr 26 2006 Ignacio Vazquez-Abrams <ivazquez@ivazquez.net> 0.9.6-1
+- Upstream update
+
 * Thu Feb 16 2006 Ignacio Vazquez-Abrams <ivazquez@ivazquez.net> 0.9.5-1
 - Upstream update
 
