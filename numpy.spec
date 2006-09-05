@@ -1,8 +1,9 @@
-%{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 %{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
+# eval to 2.3 if python isn't yet present, workaround for no python in fc4 minimal buildroot
+%{!?python_version: %define python_version %(%{__python} -c 'import sys; print sys.version.split(" ")[0]' || echo "2.3")}
 
 Name:           numpy
-Version:        0.9.6
+Version:        0.9.8
 Release:        1%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
@@ -10,12 +11,12 @@ Group:          Development/Languages
 License:        BSD
 URL:            http://numeric.scipy.org/
 Source0:        http://dl.sourceforge.net/numpy/%{name}-%{version}.tar.gz
-Patch:          numpy-0.9.4-f2pynumpy.patch
-Patch1:         numpy-0.9.4-gfortran.patch
+Patch0:         numpy-0.9.4-f2pynumpy.patch
+Patch1:         numpy-0.9.8-gfortran.patch
+Patch2:         numpy-0.9.8-check_types.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python-devel atlas-devel blas-devel lapack-devel python-setuptools gcc-gfortran
-Requires:   python-abi = %(%{__python} -c "import sys ; print sys.version[:3]")
 
 %description
 The Numeric Python extensions is a set of extensions to the Python programming
@@ -31,11 +32,14 @@ This package also contains a version of f2py that works properly with it.
 
 %prep
 %setup -q
-%patch -p1 -b .f2pynumpy
+%patch0 -p1 -b .f2pynumpy
 %patch1 -p1 -b .gfortran
+%patch2 -p1 -b .check_types
 
 %build
-FFTW=%{_libdir} BLAS=%{_libdir} LAPACK=%{_libdir} CFLAGS="$RPM_OPT_FLAGS" %{__python} setup.py build
+ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
+    LAPACK=%{_libdir} CFLAGS="$RPM_OPT_FLAGS" \
+    %{__python} setup.py build
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -64,6 +68,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/%{name}
 
 %changelog
+* Tue Sep 06 2006 Jarod Wilson <jwilson@redhat.com> 0.9.8-1
+- New upstream release
+
 * Wed Apr 26 2006 Ignacio Vazquez-Abrams <ivazquez@ivazquez.net> 0.9.6-1
 - Upstream update
 
