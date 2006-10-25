@@ -3,7 +3,7 @@
 %{!?python_version: %define python_version %(%{__python} -c 'import sys; print sys.version.split(" ")[0]' || echo "2.3")}
 
 Name:           numpy
-Version:        0.9.8
+Version:        1.0
 Release:        1%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
@@ -12,8 +12,7 @@ License:        BSD
 URL:            http://numeric.scipy.org/
 Source0:        http://dl.sourceforge.net/numpy/%{name}-%{version}.tar.gz
 Patch0:         numpy-0.9.4-f2pynumpy.patch
-Patch1:         numpy-0.9.8-gfortran.patch
-Patch2:         numpy-0.9.8-check_types.patch
+Patch1:         numpy-1.0-gfortran.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python-devel atlas-devel blas-devel lapack-devel python-setuptools gcc-gfortran
@@ -34,7 +33,6 @@ This package also contains a version of f2py that works properly with it.
 %setup -q
 %patch0 -p1 -b .f2pynumpy
 %patch1 -p1 -b .gfortran
-%patch2 -p1 -b .check_types
 
 %build
 ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
@@ -43,7 +41,11 @@ ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%{__python} setup.py install -O1 --skip-build --root $RPM_BUILD_ROOT
+#%{__python} setup.py install -O1 --skip-build --root $RPM_BUILD_ROOT
+# skip-build currently broken, this works around it for now
+ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
+    LAPACK=%{_libdir} CFLAGS="$RPM_OPT_FLAGS" \
+    %{__python} setup.py install --root $RPM_BUILD_ROOT
 rm -rf docs-f2py ; mv $RPM_BUILD_ROOT%{python_sitearch}/%{name}/f2py/docs docs-f2py
 mv -f $RPM_BUILD_ROOT%{python_sitearch}/%{name}/f2py/f2py.1 f2py.1
 rm -rf doc ; mv -f $RPM_BUILD_ROOT%{python_sitearch}/%{name}/doc .
@@ -68,6 +70,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/%{name}
 
 %changelog
+* Wed Oct 25 2006 Jarod Wilson <jwilson@redhat.com> 1.0-1
+- New upstream release
+
 * Tue Sep 06 2006 Jarod Wilson <jwilson@redhat.com> 0.9.8-1
 - New upstream release
 
