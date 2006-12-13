@@ -4,7 +4,7 @@
 
 Name:           numpy
 Version:        1.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
@@ -37,7 +37,7 @@ This package also contains a version of f2py that works properly with it.
 %build
 ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="$RPM_OPT_FLAGS" \
-    %{__python} setup.py build
+    %{__python} setup.py build --without-pydebug
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -70,6 +70,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/%{name}
 
 %changelog
+* Wed Dec 12 2006 Jarod Wilson <jwilson@redhat.com> 1.0-3
+- Disable pydebug, build against python 2.5 fails otherwise
+
 * Tue Dec 12 2006 Jarod Wilson <jwilson@redhat.com> 1.0-2
 - Rebuild for python 2.5
 
