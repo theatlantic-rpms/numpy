@@ -71,7 +71,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Wed Dec 13 2006 Jarod Wilson <jwilson@redhat.com> 1.0.1-1
-- New upstream release (yay, it even builds w/python 2.5)
+- New upstream release
 
 * Tue Dec 12 2006 Jarod Wilson <jwilson@redhat.com> 1.0-2
 - Rebuild for python 2.5
