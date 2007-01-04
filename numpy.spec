@@ -18,7 +18,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  python-devel atlas-devel blas-devel lapack-devel python-setuptools gcc-gfortran
 
 Provides:       f2py
-Obsoletes:      f2py <= 2.45.241_1926
+Obsoletes:      f2py <= 2.45.241_1927
 
 %description
 NumPy is a general-purpose array-processing package designed to
