@@ -4,7 +4,7 @@
 
 Name:           numpy
 Version:        1.0.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
@@ -13,6 +13,7 @@ URL:            http://numeric.scipy.org/
 Source0:        http://dl.sourceforge.net/numpy/%{name}-%{version}.tar.gz
 Patch0:         numpy-1.0.1-f2py.patch
 Patch1:         numpy-1.0-gfortran.patch
+Patch2:         numpy-1.0.1-cpuinfo.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python-devel atlas-devel blas-devel lapack-devel python-setuptools gcc-gfortran
@@ -36,6 +37,7 @@ this package is a version of f2py that works properly with NumPy.
 %setup -q
 %patch0 -p1 -b .f2py
 %patch1 -p1 -b .gfortran
+%patch2 -p1 -b .cpuinfo
 
 %build
 env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
@@ -74,6 +76,10 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/%{name}
 
 %changelog
+* Fri Feb 23 2007 Jarod Wilson <jwilson@redhat.com> 1.0.1-3
+- Fix up cpuinfo bug (#229753). Upstream bug/change:
+  http://projects.scipy.org/scipy/scipy/ticket/349
+
 * Thu Jan 04 2007 Jarod Wilson <jwilson@redhat.com> 1.0.1-2
 - Per discussion w/Jose Matos, Obsolete/Provide f2py, as the
   stand-alone one is no longer supported/maintained upstream
