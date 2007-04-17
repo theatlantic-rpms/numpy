@@ -4,7 +4,7 @@
 
 Name:           numpy
 Version:        1.0.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
@@ -76,6 +76,10 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/%{name}
 
 %changelog
+* Tue Apr 17 2007 Jarod Wilson <jwilson@redhat.com> 1.0.1-4
+- Update gfortran patch to recognize latest gfortran f95 support 
+- Resolves rhbz#236444
+
 * Fri Feb 23 2007 Jarod Wilson <jwilson@redhat.com> 1.0.1-3
 - Fix up cpuinfo bug (#229753). Upstream bug/change:
   http://projects.scipy.org/scipy/scipy/ticket/349

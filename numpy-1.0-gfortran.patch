@@ -10,7 +10,23 @@ diff -ur numpy-1.0.orig/numpy/distutils/fcompiler/gnu.py numpy-1.0/numpy/distuti
          'archiver'     : ["ar", "-cr"],
          'ranlib'       : ["ranlib"],
          'linker_exe'   : [fc_exe, "-g", "-Wall"]
-@@ -255,7 +255,7 @@
+@@ -247,12 +247,14 @@ class GnuFCompiler(FCompiler):
+ class Gnu95FCompiler(GnuFCompiler):
+ 
+     compiler_type = 'gnu95'
+-    version_match = simple_version_match(start='GNU Fortran 95')
++    version_match = simple_version_match(start='GNU Fortran (95|\(GCC\))')
+ 
+     # 'gfortran --version' results:
+     # Debian: GNU Fortran 95 (GCC 4.0.3 20051023 (prerelease) (Debian 4.0.2-3))
+     # OS X: GNU Fortran 95 (GCC) 4.1.0
+     #       GNU Fortran 95 (GCC) 4.2.0 20060218 (experimental)
++    #       GNU Fortran (GCC) 4.3.0 20070316 (experimental)
++    # Red Hat: GNU Fortran (GCC) 4.1.2 20070403 (Red Hat 4.1.2-8)
+ 
+     for fc_exe in map(find_executable,['gfortran','f95']):
+         if os.path.isfile(fc_exe):
+@@ -257,7 +257,7 @@
          'compiler_f77' : [fc_exe,"-Wall","-ffixed-form","-fno-second-underscore"],
          'compiler_f90' : [fc_exe,"-Wall","-fno-second-underscore"],
          'compiler_fix' : [fc_exe,"-Wall","-ffixed-form","-fno-second-underscore"],
