@@ -1,0 +1,13 @@
+--- numpy-1.0.3/setup.py.orig	2007-06-06 10:06:58.000000000 -0400
++++ numpy-1.0.3/setup.py	2007-06-06 10:07:32.000000000 -0400
+@@ -49,8 +49,8 @@ def configuration(parent_package='',top_
+     config.add_subpackage('numpy')
+         
+     config.add_data_files(('numpy','*.txt'))
+-    config.add_data_files(('.','COMPATIBILITY'),('.','scipy_compatibility'),
+-                           ('.','site.cfg.example'))
++    config.add_data_files(('numpy','COMPATIBILITY'),('numpy','scipy_compatibility'),
++                           ('numpy','site.cfg.example'))
+     
+     config.get_version('numpy/version.py') # sets config.version
+     
