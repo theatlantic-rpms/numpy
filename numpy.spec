@@ -3,18 +3,15 @@
 %{!?python_version: %define python_version %(%{__python} -c 'import sys; print sys.version.split(" ")[0]' || echo "2.3")}
 
 Name:           numpy
-Version:        1.0.3
+Version:        1.0.3.1
 Release:        1%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
 License:        BSD
 URL:            http://numeric.scipy.org/
-#Source0:        http://dl.sourceforge.net/numpy/%{name}-%{version}.tar.gz
-# Upstream apparently had a problem with their first 1.0.3 tarball...
-Source0:        http://dl.sourceforge.net/numpy/%{name}-%{version}-2.tar.gz
+Source0:        http://dl.sourceforge.net/numpy/%{name}-%{version}.tar.gz
 Patch0:         numpy-1.0.1-f2py.patch
-Patch1:         numpy-1.0.3-setup.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python-devel blas-devel lapack-devel python-setuptools gcc-gfortran
@@ -37,7 +34,6 @@ this package is a version of f2py that works properly with NumPy.
 %prep
 %setup -q -n %{name}-%{version}
 %patch0 -p1 -b .f2py
-%patch1 -p1 -b .setup
 
 %build
 env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
@@ -76,6 +72,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/%{name}
 
 %changelog
+* Wed Aug 22 2007 Jarod Wilson <jwilson@redhat.com> 1.0.3.1-1
+- New upstream release
+
 * Wed Jun 06 2007 Jarod Wilson <jwilson@redhat.com> 1.0.3-1
 - New upstream release
 
