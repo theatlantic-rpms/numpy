@@ -4,7 +4,7 @@
 
 Name:           numpy
 Version:        1.0.3.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
@@ -70,8 +70,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/*
 %{_mandir}/man*/*
 %{python_sitearch}/%{name}
+%if "%{?fedora}" >= "9"
+%{python_sitearch}/%{name}-*.egg-info
+%endif
 
 %changelog
+* Mon Feb 11 2008 Jarod Wilson <jwilson@redhat.com> 1.0.3.1-2
+- Add python egg to %%files on f9+
+
 * Wed Aug 22 2007 Jarod Wilson <jwilson@redhat.com> 1.0.3.1-1
 - New upstream release
 
