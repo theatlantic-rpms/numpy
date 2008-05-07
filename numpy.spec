@@ -3,8 +3,8 @@
 %{!?python_version: %define python_version %(%{__python} -c 'import sys; print sys.version.split(" ")[0]' || echo "2.3")}
 
 Name:           numpy
-Version:        1.0.3.1
-Release:        2%{?dist}
+Version:        1.0.4
+Release:        1%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
@@ -70,11 +70,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/*
 %{_mandir}/man*/*
 %{python_sitearch}/%{name}
-%if "%{?fedora}" >= "9"
+%if "0%{?fedora}" >= "9"
 %{python_sitearch}/%{name}-*.egg-info
 %endif
 
 %changelog
+* Tue May 06 2008 Jarod Wilson <jwilson@redhat.com> 1.0.4-1
+- New upstream release
+
 * Mon Feb 11 2008 Jarod Wilson <jwilson@redhat.com> 1.0.3.1-2
 - Add python egg to %%files on f9+
 
