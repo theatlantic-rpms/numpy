@@ -70,7 +70,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/*
 %{_mandir}/man*/*
 %{python_sitearch}/%{name}
-%if "0%{?fedora}" >= "9"
+%if 0%{?fedora} >= 9
 %{python_sitearch}/%{name}-*.egg-info
 %endif
 
