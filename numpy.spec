@@ -56,7 +56,7 @@ pushd $RPM_BUILD_ROOT%{_bindir} &> /dev/null
 ln -s f2py f2py.numpy
 popd &> /dev/null
 
-%check ||:
+%check
 pushd doc &> /dev/null
 PYTHONPATH="$RPM_BUILD_ROOT%{python_sitearch}" %{__python} -c "import pkg_resources, numpy ; numpy.test(1, 1)"
 popd &> /dev/null
