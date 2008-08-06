@@ -3,7 +3,7 @@
 %{!?python_version: %define python_version %(%{__python} -c 'import sys; print sys.version.split(" ")[0]' || echo "2.3")}
 
 Name:           numpy
-Version:        1.1.0
+Version:        1.1.1
 Release:        1%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
@@ -75,6 +75,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Aug 06 2008 Jon Ciesla <limb@jcomserv.net> 1.1.1-1
+- New upstream release
+
 * Thu May 29 2008 Jarod Wilson <jwilson@redhat.com> 1.1.0-1
 - New upstream release
 
