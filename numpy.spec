@@ -3,7 +3,7 @@
 %{!?python_version: %define python_version %(%{__python} -c 'import sys; print sys.version.split(" ")[0]' || echo "2.3")}
 
 Name:           numpy
-Version:        1.1.1
+Version:        1.2.0
 Release:        1%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
@@ -14,7 +14,8 @@ Source0:        http://dl.sourceforge.net/numpy/%{name}-%{version}.tar.gz
 Patch0:         numpy-1.0.1-f2py.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  python-devel blas-devel lapack-devel python-setuptools gcc-gfortran
+BuildRequires:  python-devel lapack-devel python-setuptools gcc-gfortran atlas python-nose
+Requires:	python-nose
 
 Provides:       f2py
 Obsoletes:      f2py <= 2.45.241_1927
@@ -58,7 +59,7 @@ popd &> /dev/null
 
 %check
 pushd doc &> /dev/null
-PYTHONPATH="$RPM_BUILD_ROOT%{python_sitearch}" %{__python} -c "import pkg_resources, numpy ; numpy.test(1, 1)"
+PYTHONPATH="%{buildroot}%{python_sitearch}" %{__python} -c "import pkg_resources, numpy ; numpy.test()"
 popd &> /dev/null
 
 %clean
@@ -75,6 +76,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Oct 07 2008 Jon Ciesla <limb@jcomserv.net> 1.2.0-1
+- New upstream release, added python-nose BR. BZ 465999.
+- Using atlas blas, not blas-devel. BZ 461472.
+
 * Wed Aug 06 2008 Jon Ciesla <limb@jcomserv.net> 1.1.1-1
 - New upstream release
 
