@@ -4,7 +4,7 @@
 
 Name:           numpy
 Version:        1.2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
@@ -76,6 +76,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Nov 29 2008 Ignacio Vazquez-Abrams <ivazqueznet+rpm@gmail.com> - 1.2.0-2
+- Rebuild for Python 2.6
+
 * Tue Oct 07 2008 Jon Ciesla <limb@jcomserv.net> 1.2.0-1
 - New upstream release, added python-nose BR. BZ 465999.
 - Using atlas blas, not blas-devel. BZ 461472.
