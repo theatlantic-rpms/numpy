@@ -4,13 +4,13 @@
 
 Name:           numpy
 Version:        1.3.0
-Release:        0.rc1%{?dist}
+Release:        1%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
 License:        BSD
 URL:            http://numeric.scipy.org/
-Source0:        http://dl.sourceforge.net/numpy/%{name}-%{version}rc1.tar.gz
+Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}.tar.gz
 Patch0:         numpy-1.0.1-f2py.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -33,7 +33,7 @@ basic linear algebra and random number generation. Also included in
 this package is a version of f2py that works properly with NumPy.
 
 %prep
-%setup -q -n %{name}-%{version}rc1
+%setup -q -n %{name}-%{version}
 %patch0 -p1 -b .f2py
 
 %build
@@ -76,6 +76,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Apr 07 2009 Jon Ciesla <limb@jcomserv.net> 1.3.0-1
+- Update to latest upstream.
+- Fixed Source0 URL.
+
 * Thu Apr 02 2009 Jon Ciesla <limb@jcomserv.net> 1.3.0-0.rc1
 - Update to latest upstream.
 
