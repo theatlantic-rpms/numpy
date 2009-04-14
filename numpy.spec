@@ -4,7 +4,7 @@
 
 Name:           numpy
 Version:        1.3.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
@@ -15,10 +15,7 @@ Patch0:         numpy-1.0.1-f2py.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python-devel lapack-devel python-setuptools gcc-gfortran atlas python-nose
-Requires:	python-nose python-devel
-
-Provides:       f2py
-Obsoletes:      f2py <= 2.45.241_1927
+Requires:	python-nose
 
 %description
 NumPy is a general-purpose array-processing package designed to
@@ -31,6 +28,17 @@ create arrays of arbitrary type.
 There are also basic facilities for discrete fourier transform,
 basic linear algebra and random number generation. Also included in
 this package is a version of f2py that works properly with NumPy.
+
+%package f2py
+Summary:        f2py for numpy
+Group:          Development/Libraries
+Requires:       %{name} = %{version}-%{release}
+Requires:       python-devel
+Provides:       f2py
+Obsoletes:      f2py <= 2.45.241_1927
+
+%description f2py
+This package includes a version of f2py that works properly with NumPy.
 
 %prep
 %setup -q -n %{name}-%{version}
@@ -57,6 +65,15 @@ pushd $RPM_BUILD_ROOT%{_bindir} &> /dev/null
 ln -s f2py f2py.numpy
 popd &> /dev/null
 
+# Remove doc files. They should in in %doc
+rm -f $RPM_BUILD_ROOT%{python_sitearch}/%{name}/COMPATIBILITY
+rm -f $RPM_BUILD_ROOT%{python_sitearch}/%{name}/DEV_README.txt
+rm -f $RPM_BUILD_ROOT%{python_sitearch}/%{name}/INSTALL.txt
+rm -f $RPM_BUILD_ROOT%{python_sitearch}/%{name}/LICENSE.txt
+rm -f $RPM_BUILD_ROOT%{python_sitearch}/%{name}/README.txt
+rm -f $RPM_BUILD_ROOT%{python_sitearch}/%{name}/THANKS.txt
+rm -f $RPM_BUILD_ROOT%{python_sitearch}/%{name}/site.cfg.example
+
 %check
 pushd doc &> /dev/null
 PYTHONPATH="%{buildroot}%{python_sitearch}" %{__python} -c "import pkg_resources, numpy ; numpy.test()"
@@ -67,15 +84,35 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc docs-f2py doc/* LICENSE.txt
-%{_bindir}/*
-%{_mandir}/man*/*
-%{python_sitearch}/%{name}
+%doc docs-f2py doc/* LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
+%dir %{python_sitearch}/%{name}
+%{python_sitearch}/%{name}/*.py*
+%{python_sitearch}/%{name}/core
+%{python_sitearch}/%{name}/lib
+%{python_sitearch}/%{name}/ma
+%{python_sitearch}/%{name}/numarray
+%{python_sitearch}/%{name}/oldnumeric
+%{python_sitearch}/%{name}/random
+%{python_sitearch}/%{name}/testing
+%{python_sitearch}/%{name}/tests
 %if 0%{?fedora} >= 9
 %{python_sitearch}/%{name}-*.egg-info
 %endif
 
+%files f2py
+%defattr(-,root,root,-)
+%{_mandir}/man*/*
+%{_bindir}/f2py
+%{_bindir}/f2py.numpy
+%{python_sitearch}/%{name}/distutils
+%{python_sitearch}/%{name}/f2py
+%{python_sitearch}/%{name}/fft
+%{python_sitearch}/%{name}/linalg
+
 %changelog
+* Tue Apr 14 2009 Jon Ciesla <limb@jcomserv.net> 1.3.0-2
+- Split out f2py into subpackage, thanks Peter Robinson pbrobinson@gmail.com.
+
 * Tue Apr 07 2009 Jon Ciesla <limb@jcomserv.net> 1.3.0-1
 - Update to latest upstream.
 - Fixed Source0 URL.
