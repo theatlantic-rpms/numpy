@@ -4,7 +4,7 @@
 
 Name:           numpy
 Version:        1.3.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
@@ -88,7 +88,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{python_sitearch}/%{name}
 %{python_sitearch}/%{name}/*.py*
 %{python_sitearch}/%{name}/core
+%{python_sitearch}/%{name}/fft
 %{python_sitearch}/%{name}/lib
+%{python_sitearch}/%{name}/linalg
 %{python_sitearch}/%{name}/ma
 %{python_sitearch}/%{name}/numarray
 %{python_sitearch}/%{name}/oldnumeric
@@ -106,10 +108,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/f2py.numpy
 %{python_sitearch}/%{name}/distutils
 %{python_sitearch}/%{name}/f2py
-%{python_sitearch}/%{name}/fft
-%{python_sitearch}/%{name}/linalg
+
 
 %changelog
+* Fri Apr 17 2009 Jon Ciesla <limb@jcomserv.net> 1.3.0-3
+- Moved linalg, fft back to main package.
+
 * Tue Apr 14 2009 Jon Ciesla <limb@jcomserv.net> 1.3.0-2
 - Split out f2py into subpackage, thanks Peter Robinson pbrobinson@gmail.com.
 
