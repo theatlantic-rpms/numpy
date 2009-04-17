@@ -4,7 +4,7 @@
 
 Name:           numpy
 Version:        1.3.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
@@ -111,6 +111,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Apr 17 2009 Jon Ciesla <limb@jcomserv.net> 1.3.0-4
+- EVR bump for pygame chainbuild.
+
 * Fri Apr 17 2009 Jon Ciesla <limb@jcomserv.net> 1.3.0-3
 - Moved linalg, fft back to main package.
 
