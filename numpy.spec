@@ -4,7 +4,7 @@
 
 Name:           numpy
 Version:        1.3.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
@@ -111,6 +111,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jul 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.0-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
+
 * Thu Jun 11 2009 Jon Ciesla <limb@jcomserv.net> 1.3.0-5
 - Fixed atlas BR, BZ 505376.
 
