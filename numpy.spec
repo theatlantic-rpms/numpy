@@ -4,7 +4,7 @@
 
 Name:           numpy
 Version:        1.3.0
-Release:        6%{?dist}
+Release:        6%{?dist}.fa1
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
@@ -12,6 +12,7 @@ License:        BSD
 URL:            http://numeric.scipy.org/
 Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}.tar.gz
 Patch0:         numpy-1.0.1-f2py.patch
+Patch1:	        numpy-arm.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
@@ -43,6 +44,7 @@ This package includes a version of f2py that works properly with NumPy.
 %prep
 %setup -q -n %{name}-%{version}
 %patch0 -p1 -b .f2py
+%patch1 -p1 -b .arm
 
 %build
 env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
@@ -111,6 +113,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Nov 17 2009 Jitesh Shah <jiteshs@marvell.com> - 1.3.0-6.fa1
+- Add ARM support
+
+
 * Sat Jul 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.0-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
 
