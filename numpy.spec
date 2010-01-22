@@ -3,8 +3,8 @@
 %{!?python_version: %define python_version %(%{__python} -c 'import sys; print sys.version.split(" ")[0]' || echo "2.3")}
 
 Name:           numpy
-Version:        1.3.0
-Release:        6%{?dist}.fa1
+Version:        1.4.0
+Release:        1%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
@@ -12,7 +12,7 @@ License:        BSD
 URL:            http://numeric.scipy.org/
 Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}.tar.gz
 Patch0:         numpy-1.0.1-f2py.patch
-Patch1:	        numpy-arm.patch
+#Patch1:         numpy-arm.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
@@ -44,7 +44,7 @@ This package includes a version of f2py that works properly with NumPy.
 %prep
 %setup -q -n %{name}-%{version}
 %patch0 -p1 -b .f2py
-%patch1 -p1 -b .arm
+#%patch1 -p1 -b .arm
 
 %build
 env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
@@ -99,6 +99,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/%{name}/random
 %{python_sitearch}/%{name}/testing
 %{python_sitearch}/%{name}/tests
+%{python_sitearch}/%{name}/compat
+%{python_sitearch}/%{name}/matrixlib
+%{python_sitearch}/%{name}/polynomial
 %if 0%{?fedora} >= 9
 %{python_sitearch}/%{name}-*.egg-info
 %endif
@@ -113,9 +116,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jan 22 2010 Jon Ciesla <limb@jcomserv.net> 1.4.0-1
+- 1.4.0.
+- Dropped ARM patch, ARM support added upstream.
+
 * Tue Nov 17 2009 Jitesh Shah <jiteshs@marvell.com> - 1.3.0-6.fa1
 - Add ARM support
-
 
 * Sat Jul 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.0-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
