@@ -4,7 +4,7 @@
 
 Name:           numpy
 Version:        1.4.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
@@ -15,7 +15,7 @@ Patch0:         numpy-1.0.1-f2py.patch
 #Patch1:         numpy-arm.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  python-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
+BuildRequires:  python-devel lapack-devel python-setuptools gcc-gfortran python-nose
 Requires:	python-nose
 
 %description
@@ -116,6 +116,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Feb 09 2010 Jon Ciesla <limb@jcomserv.net> 1.4.0-2
+- Temporarily dropping atlas BR to work around 562577.
+
 * Fri Jan 22 2010 Jon Ciesla <limb@jcomserv.net> 1.4.0-1
 - 1.4.0.
 - Dropped ARM patch, ARM support added upstream.
