@@ -4,7 +4,7 @@
 
 Name:           numpy
 Version:        1.4.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
@@ -15,8 +15,8 @@ Patch0:         numpy-1.0.1-f2py.patch
 #Patch1:         numpy-arm.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  python-devel lapack-devel python-setuptools gcc-gfortran python-nose
-Requires:	python-nose lapack
+BuildRequires:  python-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
+Requires:	python-nose
 
 %description
 NumPy is a general-purpose array-processing package designed to
@@ -116,6 +116,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Feb 16 2010 Jon Ciesla <limb@jcomserv.net> 1.4.0-4
+- Re-enabling atlas BR, dropping lapack Requires.
+
 * Wed Feb 10 2010 Jon Ciesla <limb@jcomserv.net> 1.4.0-3
 - Since the previous didn't work, Requiring lapack.
 
