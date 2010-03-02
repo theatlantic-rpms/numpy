@@ -4,7 +4,7 @@
 
 Name:           numpy
 Version:        1.4.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
@@ -67,6 +67,10 @@ pushd $RPM_BUILD_ROOT%{_bindir} &> /dev/null
 ln -s f2py f2py.numpy
 popd &> /dev/null
 
+#symlink for includes, BZ 185079
+mkdir -p $RPM_BUILD_ROOT/usr/include
+ln -s %{python_sitearch}/%{name}/core/include/numpy/ $RPM_BUILD_ROOT/usr/include/numpy
+
 # Remove doc files. They should in in %doc
 rm -f $RPM_BUILD_ROOT%{python_sitearch}/%{name}/COMPATIBILITY
 rm -f $RPM_BUILD_ROOT%{python_sitearch}/%{name}/DEV_README.txt
@@ -105,6 +109,7 @@ rm -rf $RPM_BUILD_ROOT
 %if 0%{?fedora} >= 9
 %{python_sitearch}/%{name}-*.egg-info
 %endif
+%{_includedir}/numpy
 
 %files f2py
 %defattr(-,root,root,-)
@@ -116,6 +121,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Mar 02 2010 Jon Ciesla <limb@jcomserv.net> 1.4.0-5
+- Linking /usr/include/numpy to .h files, BZ 185079.
+
 * Tue Feb 16 2010 Jon Ciesla <limb@jcomserv.net> 1.4.0-4
 - Re-enabling atlas BR, dropping lapack Requires.
 
