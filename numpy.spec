@@ -3,8 +3,9 @@
 %{!?python_version: %define python_version %(%{__python} -c 'import sys; print sys.version.split(" ")[0]' || echo "2.3")}
 
 Name:           numpy
-Version:        1.4.0
-Release:        5%{?dist}
+Version:        1.3.0
+Release:        7%{?dist}
+Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
@@ -33,7 +34,7 @@ this package is a version of f2py that works properly with NumPy.
 %package f2py
 Summary:        f2py for numpy
 Group:          Development/Libraries
-Requires:       %{name} = %{version}-%{release}
+Requires:       %{name} = %{epoch}:%{version}-%{release}
 Requires:       python-devel
 Provides:       f2py
 Obsoletes:      f2py <= 2.45.241_1927
@@ -103,9 +104,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/%{name}/random
 %{python_sitearch}/%{name}/testing
 %{python_sitearch}/%{name}/tests
-%{python_sitearch}/%{name}/compat
-%{python_sitearch}/%{name}/matrixlib
-%{python_sitearch}/%{name}/polynomial
+#%{python_sitearch}/%{name}/compat
+#%{python_sitearch}/%{name}/matrixlib
+#%{python_sitearch}/%{name}/polynomial
 %if 0%{?fedora} >= 9
 %{python_sitearch}/%{name}-*.egg-info
 %endif
@@ -121,6 +122,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Apr 08 2010 Jon Ciesla <limb@jcomserv.net> 1.3.0-7
+- Reverted to 1.3.0 after upstream pulled 1.4.0, BZ 579065.
+
 * Tue Mar 02 2010 Jon Ciesla <limb@jcomserv.net> 1.4.0-5
 - Linking /usr/include/numpy to .h files, BZ 185079.
 
