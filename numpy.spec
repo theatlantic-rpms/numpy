@@ -4,7 +4,7 @@
 
 Name:           numpy
 Version:        1.3.0
-Release:        7%{?dist}
+Release:        8%{?dist}
 Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
@@ -95,6 +95,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{python_sitearch}/%{name}
 %{python_sitearch}/%{name}/*.py*
 %{python_sitearch}/%{name}/core
+%{python_sitearch}/%{name}/distutils
 %{python_sitearch}/%{name}/fft
 %{python_sitearch}/%{name}/lib
 %{python_sitearch}/%{name}/linalg
@@ -117,11 +118,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man*/*
 %{_bindir}/f2py
 %{_bindir}/f2py.numpy
-%{python_sitearch}/%{name}/distutils
 %{python_sitearch}/%{name}/f2py
 
 
 %changelog
+* Mon Apr 26 2010 Jon Ciesla <limb@jcomserv.net> 1.3.0-8
+- Moved distutils back to the main package, BZ 572820.
+
 * Thu Apr 08 2010 Jon Ciesla <limb@jcomserv.net> 1.3.0-7
 - Reverted to 1.3.0 after upstream pulled 1.4.0, BZ 579065.
 
