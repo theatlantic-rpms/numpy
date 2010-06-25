@@ -4,7 +4,7 @@
 
 Name:           numpy
 Version:        1.4.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
@@ -122,6 +122,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jun 24 2010 Jef Spaleta <jspaleta@fedoraprject.org> 1.4.1-2
+- source commit fix 
+
 * Thu Jun 24 2010 Jef Spaleta <jspaleta@fedoraprject.org> 1.4.1-1
 - New upstream release. Include backported doublefree patch
 
