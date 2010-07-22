@@ -4,7 +4,7 @@
 
 Name:           numpy
 Version:        1.4.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
@@ -14,6 +14,12 @@ URL:            http://numeric.scipy.org/
 Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}.tar.gz
 Patch0:         numpy-1.0.1-f2py.patch
 Patch1:         numpy_doublefree.patch
+
+# PyOS_ascii_strtod is deprecated in python 2.7, and the deprecation warning
+# outside of the GIL causes python to segfault (rhbz#617384)
+# Patch is a combination of upstream changeset 7926 followed by 8387
+Patch2:         numpy-1.4.1-remove-PyOS_ascii_strtod.patch
+
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
@@ -46,6 +52,7 @@ This package includes a version of f2py that works properly with NumPy.
 %setup -q -n %{name}-%{version}
 %patch0 -p1 -b .f2py
 %patch1 -p0 
+%patch2 -p1 -b .remove-PyOS_ascii_strtod
 
 %build
 env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
@@ -126,6 +133,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jul 22 2010 David Malcolm <dmalcolm@redhat.com> - 1:1.4.1-5
+- fix segfault within %check on 2.7 (patch 2)
+
 * Wed Jul 21 2010 David Malcolm <dmalcolm@redhat.com> - 1:1.4.1-4
 - Rebuilt for https://fedoraproject.org/wiki/Features/Python_2.7/MassRebuild
 
