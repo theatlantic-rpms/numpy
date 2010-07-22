@@ -4,7 +4,7 @@
 
 Name:           numpy
 Version:        1.4.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
@@ -126,6 +126,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jul 21 2010 David Malcolm <dmalcolm@redhat.com> - 1:1.4.1-4
+- Rebuilt for https://fedoraproject.org/wiki/Features/Python_2.7/MassRebuild
+
 * Sun Jul 18 2010 Dan Horák <dan[at]danny.cz> 1.4.1-3
 - ignore the "Ticket #1299 second test" failure on s390(x)
 
