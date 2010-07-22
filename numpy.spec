@@ -4,7 +4,7 @@
 
 Name:           numpy
 Version:        1.4.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
@@ -133,6 +133,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jul 22 2010 David Malcolm <dmalcolm@redhat.com> - 1:1.4.1-6
+- actually add the patch this time
+
 * Thu Jul 22 2010 David Malcolm <dmalcolm@redhat.com> - 1:1.4.1-5
 - fix segfault within %check on 2.7 (patch 2)
 
