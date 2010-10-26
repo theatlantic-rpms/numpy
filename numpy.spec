@@ -1,15 +1,15 @@
 %if (0%{?fedora} > 12 || 0%{?rhel} > 5)
-%global with_python3 0
+%global with_python3 1
 %else
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 %endif
 
 #uncomment next line for a release candidate or a beta
-#global relc rc1
+%global relc rc1
 
 Name:           numpy
-Version:        1.4.1
-Release:        6%{?dist}
+Version:        1.5.1
+Release:        0.1%{?dist}
 Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
@@ -17,13 +17,6 @@ Group:          Development/Languages
 License:        BSD
 URL:            http://numeric.scipy.org/
 Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
-Patch0:         numpy-1.0.1-f2py.patch
-Patch1:         numpy_doublefree.patch
-
-# PyOS_ascii_strtod is deprecated in python 2.7, and the deprecation warning
-# outside of the GIL causes python to segfault (rhbz#617384)
-# Patch is a combination of upstream changeset 7926 followed by 8387
-Patch2:         numpy-1.4.1-remove-PyOS_ascii_strtod.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -90,9 +83,6 @@ This package includes a version of f2py that works properly with NumPy.
 
 %prep
 %setup -q -n %{name}-%{version}%{?relc}
-%patch0 -p1 -b .f2py
-%patch1 -p0 
-%patch2 -p1 -b .remove-PyOS_ascii_strtod
 
 %if 0%{?with_python3}
 rm -rf %{py3dir}
@@ -103,13 +93,13 @@ cp -a . %{py3dir}
 %if 0%{?with_python3}
 pushd %{py3dir}
 env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
-    LAPACK=%{_libdir} CFLAGS="$RPM_OPT_FLAGS" \
+    LAPACK=%{_libdir} CFLAGS="%{optflags}" \
     %{__python} setup.py build
 popd
 %endif # with _python3
 
 env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
-    LAPACK=%{_libdir} CFLAGS="$RPM_OPT_FLAGS" \
+    LAPACK=%{_libdir} CFLAGS="%{optflags}" \
     %{__python} setup.py build
 
 %install
@@ -120,15 +110,13 @@ pushd %{py3dir}
 #%{__python} setup.py install -O1 --skip-build --root %{buildroot}
 # skip-build currently broken, this works around it for now
 env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
-    LAPACK=%{_libdir} CFLAGS="$RPM_OPT_FLAGS" \
+    LAPACK=%{_libdir} CFLAGS="%{optflags}" \
     %{__python3} setup.py install --root %{buildroot}
-rm -rf docs-f2py ; mv %{buildroot}%{python_sitearch}/%{name}/f2py/docs docs-f2py
+rm -rf docs-f2py ; mv %{buildroot}%{python3_sitearch}/%{name}/f2py/docs docs-f2py
 mv -f %{buildroot}%{python3_sitearch}/%{name}/f2py/f2py.1 f2py.1
 rm -rf doc ; mv -f %{buildroot}%{python3_sitearch}/%{name}/doc .
 install -D -p -m 0644 f2py.1 %{buildroot}%{_mandir}/man1/f2py.1
 pushd %{buildroot}%{_bindir} &> /dev/null
-# symlink for anyone who was using f2py.numpy
-ln -s f2py f2py.numpy
 popd &> /dev/null
 
 # Remove doc files. They should in in %doc
@@ -146,7 +134,7 @@ popd
 #%{__python} setup.py install -O1 --skip-build --root %{buildroot}
 # skip-build currently broken, this works around it for now
 env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
-    LAPACK=%{_libdir} CFLAGS="$RPM_OPT_FLAGS" \
+    LAPACK=%{_libdir} CFLAGS="%{optflags}" \
     %{__python} setup.py install --root %{buildroot}
 rm -rf docs-f2py ; mv %{buildroot}%{python_sitearch}/%{name}/f2py/docs docs-f2py
 mv -f %{buildroot}%{python_sitearch}/%{name}/f2py/f2py.1 f2py.1
@@ -181,7 +169,8 @@ popd &> /dev/null
 
 %if 0%{?with_python3}
 pushd doc &> /dev/null
-PYTHONPATH="%{buildroot}%{python3_sitearch}" %{__python3} -c "import pkg_resources, numpy ; numpy.test()" \
+# there is no python3-nose yet
+#PYTHONPATH="%{buildroot}%{python3_sitearch}" %{__python3} -c "import pkg_resources, numpy ; numpy.test()" \
 %ifarch s390 s390x
 || :
 %endif
@@ -209,6 +198,7 @@ rm -rf %{buildroot}
 %{python_sitearch}/%{name}/random
 %{python_sitearch}/%{name}/testing
 %{python_sitearch}/%{name}/tests
+%{python_sitearch}/%{name}/tools
 %{python_sitearch}/%{name}/compat
 %{python_sitearch}/%{name}/matrixlib
 %{python_sitearch}/%{name}/polynomial
@@ -248,13 +238,17 @@ rm -rf %{buildroot}
 %files -n python3-numpy-f2py
 %defattr(-,root,root,-)
 #%{_mandir}/man*/*
-#%{_bindir}/f2py
-#%{_bindir}/f2py.numpy
+%{_bindir}/f2py3
 %{python3_sitearch}/%{name}/f2py
 %endif # with_python3
 
 
 %changelog
+* Wed Oct 27 2010 Thomas Spura <tomspur@fedoraproject.org> - 1:1.5.1-0.1
+- update to 1.5.1rc1
+- add python3 subpackage
+- some spec-cleanups
+
 * Thu Jul 22 2010 David Malcolm <dmalcolm@redhat.com> - 1:1.4.1-6
 - actually add the patch this time
 
