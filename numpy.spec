@@ -1,8 +1,6 @@
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 %endif
-# eval to 2.3 if python isn't yet present, workaround for no python in fc4 minimal buildroot
-%{!?python_version: %define python_version %(%{__python} -c 'import sys; print sys.version.split(" ")[0]' || echo "2.3")}
 
 Name:           numpy
 Version:        1.4.1
