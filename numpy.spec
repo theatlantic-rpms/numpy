@@ -1,4 +1,6 @@
-%if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
+%if (0%{?fedora} > 12 || 0%{?rhel} > 5)
+%global with_python3 0
+%else
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 %endif
 
@@ -22,8 +24,13 @@ Patch2:         numpy-1.4.1-remove-PyOS_ascii_strtod.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  python-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
+BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
 Requires:	python-nose
+%if 0%{?with_python3}
+BuildRequires:  python3-devel
+BuildRequires:  python3-setuptools
+#BuildRequires:  python3-nose
+%endif
 
 %description
 NumPy is a general-purpose array-processing package designed to
@@ -48,19 +55,91 @@ Obsoletes:      f2py <= 2.45.241_1927
 %description f2py
 This package includes a version of f2py that works properly with NumPy.
 
+%if 0%{?with_python3}
+%package -n python3-numpy
+Summary:        A fast multidimensional array facility for Python
+
+Group:          Development/Languages
+License:        BSD
+%description -n python3-numpy
+NumPy is a general-purpose array-processing package designed to
+efficiently manipulate large multi-dimensional arrays of arbitrary
+records without sacrificing too much speed for small multi-dimensional
+arrays.  NumPy is built on the Numeric code base and adds features
+introduced by numarray as well as an extended C-API and the ability to
+create arrays of arbitrary type.
+
+There are also basic facilities for discrete fourier transform,
+basic linear algebra and random number generation. Also included in
+this package is a version of f2py that works properly with NumPy.
+
+%package -n python3-numpy-f2py
+Summary:        f2py for numpy
+Group:          Development/Libraries
+Requires:       python3-numpy = %{epoch}:%{version}-%{release}
+Requires:       python3-devel
+Provides:       python3-f2py
+Obsoletes:      python3-f2py <= 2.45.241_1927
+
+%description -n python3-numpy-f2py
+This package includes a version of f2py that works properly with NumPy.
+%endif # with_python3
+
 %prep
 %setup -q -n %{name}-%{version}
 %patch0 -p1 -b .f2py
 %patch1 -p0 
 %patch2 -p1 -b .remove-PyOS_ascii_strtod
 
+%if 0%{?with_python3}
+rm -rf %{py3dir}
+cp -a . %{py3dir}
+%endif
+
 %build
+%if 0%{?with_python3}
+pushd %{py3dir}
+env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
+    LAPACK=%{_libdir} CFLAGS="$RPM_OPT_FLAGS" \
+    %{__python} setup.py build
+popd
+%endif # with _python3
+
 env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="$RPM_OPT_FLAGS" \
     %{__python} setup.py build
 
 %install
 rm -rf $RPM_BUILD_ROOT
+# first install python3 so the binaries are overwritten by the python2 ones
+%if 0%{?with_python3}
+pushd %{py3dir}
+#%{__python} setup.py install -O1 --skip-build --root $RPM_BUILD_ROOT
+# skip-build currently broken, this works around it for now
+env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
+    LAPACK=%{_libdir} CFLAGS="$RPM_OPT_FLAGS" \
+    %{__python3} setup.py install --root $RPM_BUILD_ROOT
+rm -rf docs-f2py ; mv $RPM_BUILD_ROOT%{python_sitearch}/%{name}/f2py/docs docs-f2py
+mv -f $RPM_BUILD_ROOT%{python3_sitearch}/%{name}/f2py/f2py.1 f2py.1
+rm -rf doc ; mv -f $RPM_BUILD_ROOT%{python3_sitearch}/%{name}/doc .
+install -D -p -m 0644 f2py.1 $RPM_BUILD_ROOT%{_mandir}/man1/f2py.1
+pushd $RPM_BUILD_ROOT%{_bindir} &> /dev/null
+# symlink for anyone who was using f2py.numpy
+ln -s f2py f2py.numpy
+popd &> /dev/null
+
+# Remove doc files. They should in in %doc
+rm -f $RPM_BUILD_ROOT%{python3_sitearch}/%{name}/COMPATIBILITY
+rm -f $RPM_BUILD_ROOT%{python3_sitearch}/%{name}/DEV_README.txt
+rm -f $RPM_BUILD_ROOT%{python3_sitearch}/%{name}/INSTALL.txt
+rm -f $RPM_BUILD_ROOT%{python3_sitearch}/%{name}/LICENSE.txt
+rm -f $RPM_BUILD_ROOT%{python3_sitearch}/%{name}/README.txt
+rm -f $RPM_BUILD_ROOT%{python3_sitearch}/%{name}/THANKS.txt
+rm -f $RPM_BUILD_ROOT%{python3_sitearch}/%{name}/site.cfg.example
+
+popd
+%endif # with_python3
+
 #%{__python} setup.py install -O1 --skip-build --root $RPM_BUILD_ROOT
 # skip-build currently broken, this works around it for now
 env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
@@ -97,6 +176,17 @@ PYTHONPATH="%{buildroot}%{python_sitearch}" %{__python} -c "import pkg_resources
 # don't remove this comment
 popd &> /dev/null
 
+%if 0%{?with_python3}
+pushd doc &> /dev/null
+PYTHONPATH="%{buildroot}%{python3_sitearch}" %{__python3} -c "import pkg_resources, numpy ; numpy.test()" \
+%ifarch s390 s390x
+|| :
+%endif
+# don't remove this comment
+popd &> /dev/null
+
+%endif # with_python3
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -128,6 +218,37 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/f2py
 %{_bindir}/f2py.numpy
 %{python_sitearch}/%{name}/f2py
+
+%if 0%{?with_python3}
+%files -n python3-numpy
+%defattr(-,root,root,-)
+%doc docs-f2py doc/* LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
+%dir %{python3_sitearch}/%{name}
+%{python3_sitearch}/%{name}/*.py*
+%{python3_sitearch}/%{name}/core
+%{python3_sitearch}/%{name}/distutils
+%{python3_sitearch}/%{name}/fft
+%{python3_sitearch}/%{name}/lib
+%{python3_sitearch}/%{name}/linalg
+%{python3_sitearch}/%{name}/ma
+%{python3_sitearch}/%{name}/numarray
+%{python3_sitearch}/%{name}/oldnumeric
+%{python3_sitearch}/%{name}/random
+%{python3_sitearch}/%{name}/testing
+%{python3_sitearch}/%{name}/tests
+%{python3_sitearch}/%{name}/compat
+%{python3_sitearch}/%{name}/matrixlib
+%{python3_sitearch}/%{name}/polynomial
+%{python3_sitearch}/%{name}-*.egg-info
+#%{_includedir}/numpy
+
+%files -n python3-numpy-f2py
+%defattr(-,root,root,-)
+#%{_mandir}/man*/*
+#%{_bindir}/f2py
+#%{_bindir}/f2py.numpy
+%{python3_sitearch}/%{name}/f2py
+%endif # with_python3
 
 
 %changelog
