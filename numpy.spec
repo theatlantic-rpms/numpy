@@ -119,9 +119,7 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/%{name}/compat
 %{python_sitearch}/%{name}/matrixlib
 %{python_sitearch}/%{name}/polynomial
-%if 0%{?fedora} >= 9
 %{python_sitearch}/%{name}-*.egg-info
-%endif
 %{_includedir}/numpy
 
 %files f2py
