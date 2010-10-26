@@ -216,6 +216,7 @@ rm -rf %{buildroot}
 %files -n python3-numpy
 %defattr(-,root,root,-)
 %doc docs-f2py doc/* LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
+%{python3_sitearch}/%{name}/__pycache__/*
 %dir %{python3_sitearch}/%{name}
 %{python3_sitearch}/%{name}/*.py*
 %{python3_sitearch}/%{name}/core
