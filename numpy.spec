@@ -110,62 +110,62 @@ env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
     %{__python} setup.py build
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 # first install python3 so the binaries are overwritten by the python2 ones
 %if 0%{?with_python3}
 pushd %{py3dir}
-#%{__python} setup.py install -O1 --skip-build --root $RPM_BUILD_ROOT
+#%{__python} setup.py install -O1 --skip-build --root %{buildroot}
 # skip-build currently broken, this works around it for now
 env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="$RPM_OPT_FLAGS" \
-    %{__python3} setup.py install --root $RPM_BUILD_ROOT
-rm -rf docs-f2py ; mv $RPM_BUILD_ROOT%{python_sitearch}/%{name}/f2py/docs docs-f2py
-mv -f $RPM_BUILD_ROOT%{python3_sitearch}/%{name}/f2py/f2py.1 f2py.1
-rm -rf doc ; mv -f $RPM_BUILD_ROOT%{python3_sitearch}/%{name}/doc .
-install -D -p -m 0644 f2py.1 $RPM_BUILD_ROOT%{_mandir}/man1/f2py.1
-pushd $RPM_BUILD_ROOT%{_bindir} &> /dev/null
+    %{__python3} setup.py install --root %{buildroot}
+rm -rf docs-f2py ; mv %{buildroot}%{python_sitearch}/%{name}/f2py/docs docs-f2py
+mv -f %{buildroot}%{python3_sitearch}/%{name}/f2py/f2py.1 f2py.1
+rm -rf doc ; mv -f %{buildroot}%{python3_sitearch}/%{name}/doc .
+install -D -p -m 0644 f2py.1 %{buildroot}%{_mandir}/man1/f2py.1
+pushd %{buildroot}%{_bindir} &> /dev/null
 # symlink for anyone who was using f2py.numpy
 ln -s f2py f2py.numpy
 popd &> /dev/null
 
 # Remove doc files. They should in in %doc
-rm -f $RPM_BUILD_ROOT%{python3_sitearch}/%{name}/COMPATIBILITY
-rm -f $RPM_BUILD_ROOT%{python3_sitearch}/%{name}/DEV_README.txt
-rm -f $RPM_BUILD_ROOT%{python3_sitearch}/%{name}/INSTALL.txt
-rm -f $RPM_BUILD_ROOT%{python3_sitearch}/%{name}/LICENSE.txt
-rm -f $RPM_BUILD_ROOT%{python3_sitearch}/%{name}/README.txt
-rm -f $RPM_BUILD_ROOT%{python3_sitearch}/%{name}/THANKS.txt
-rm -f $RPM_BUILD_ROOT%{python3_sitearch}/%{name}/site.cfg.example
+rm -f %{buildroot}%{python3_sitearch}/%{name}/COMPATIBILITY
+rm -f %{buildroot}%{python3_sitearch}/%{name}/DEV_README.txt
+rm -f %{buildroot}%{python3_sitearch}/%{name}/INSTALL.txt
+rm -f %{buildroot}%{python3_sitearch}/%{name}/LICENSE.txt
+rm -f %{buildroot}%{python3_sitearch}/%{name}/README.txt
+rm -f %{buildroot}%{python3_sitearch}/%{name}/THANKS.txt
+rm -f %{buildroot}%{python3_sitearch}/%{name}/site.cfg.example
 
 popd
 %endif # with_python3
 
-#%{__python} setup.py install -O1 --skip-build --root $RPM_BUILD_ROOT
+#%{__python} setup.py install -O1 --skip-build --root %{buildroot}
 # skip-build currently broken, this works around it for now
 env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="$RPM_OPT_FLAGS" \
-    %{__python} setup.py install --root $RPM_BUILD_ROOT
-rm -rf docs-f2py ; mv $RPM_BUILD_ROOT%{python_sitearch}/%{name}/f2py/docs docs-f2py
-mv -f $RPM_BUILD_ROOT%{python_sitearch}/%{name}/f2py/f2py.1 f2py.1
-rm -rf doc ; mv -f $RPM_BUILD_ROOT%{python_sitearch}/%{name}/doc .
-install -D -p -m 0644 f2py.1 $RPM_BUILD_ROOT%{_mandir}/man1/f2py.1
-pushd $RPM_BUILD_ROOT%{_bindir} &> /dev/null
+    %{__python} setup.py install --root %{buildroot}
+rm -rf docs-f2py ; mv %{buildroot}%{python_sitearch}/%{name}/f2py/docs docs-f2py
+mv -f %{buildroot}%{python_sitearch}/%{name}/f2py/f2py.1 f2py.1
+rm -rf doc ; mv -f %{buildroot}%{python_sitearch}/%{name}/doc .
+install -D -p -m 0644 f2py.1 %{buildroot}%{_mandir}/man1/f2py.1
+pushd %{buildroot}%{_bindir} &> /dev/null
 # symlink for anyone who was using f2py.numpy
 ln -s f2py f2py.numpy
 popd &> /dev/null
 
 #symlink for includes, BZ 185079
-mkdir -p $RPM_BUILD_ROOT/usr/include
-ln -s %{python_sitearch}/%{name}/core/include/numpy/ $RPM_BUILD_ROOT/usr/include/numpy
+mkdir -p %{buildroot}/usr/include
+ln -s %{python_sitearch}/%{name}/core/include/numpy/ %{buildroot}/usr/include/numpy
 
 # Remove doc files. They should in in %doc
-rm -f $RPM_BUILD_ROOT%{python_sitearch}/%{name}/COMPATIBILITY
-rm -f $RPM_BUILD_ROOT%{python_sitearch}/%{name}/DEV_README.txt
-rm -f $RPM_BUILD_ROOT%{python_sitearch}/%{name}/INSTALL.txt
-rm -f $RPM_BUILD_ROOT%{python_sitearch}/%{name}/LICENSE.txt
-rm -f $RPM_BUILD_ROOT%{python_sitearch}/%{name}/README.txt
-rm -f $RPM_BUILD_ROOT%{python_sitearch}/%{name}/THANKS.txt
-rm -f $RPM_BUILD_ROOT%{python_sitearch}/%{name}/site.cfg.example
+rm -f %{buildroot}%{python_sitearch}/%{name}/COMPATIBILITY
+rm -f %{buildroot}%{python_sitearch}/%{name}/DEV_README.txt
+rm -f %{buildroot}%{python_sitearch}/%{name}/INSTALL.txt
+rm -f %{buildroot}%{python_sitearch}/%{name}/LICENSE.txt
+rm -f %{buildroot}%{python_sitearch}/%{name}/README.txt
+rm -f %{buildroot}%{python_sitearch}/%{name}/THANKS.txt
+rm -f %{buildroot}%{python_sitearch}/%{name}/site.cfg.example
 
 %check
 pushd doc &> /dev/null
@@ -188,7 +188,7 @@ popd &> /dev/null
 %endif # with_python3
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
