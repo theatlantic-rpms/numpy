@@ -4,6 +4,9 @@
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 %endif
 
+#uncomment next line for a release candidate or a beta
+#global relc rc1
+
 Name:           numpy
 Version:        1.4.1
 Release:        6%{?dist}
@@ -13,7 +16,7 @@ Summary:        A fast multidimensional array facility for Python
 Group:          Development/Languages
 License:        BSD
 URL:            http://numeric.scipy.org/
-Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}.tar.gz
+Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
 Patch0:         numpy-1.0.1-f2py.patch
 Patch1:         numpy_doublefree.patch
 
@@ -86,7 +89,7 @@ This package includes a version of f2py that works properly with NumPy.
 %endif # with_python3
 
 %prep
-%setup -q -n %{name}-%{version}
+%setup -q -n %{name}-%{version}%{?relc}
 %patch0 -p1 -b .f2py
 %patch1 -p0 
 %patch2 -p1 -b .remove-PyOS_ascii_strtod
