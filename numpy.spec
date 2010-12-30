@@ -9,7 +9,7 @@
 
 Name:           numpy
 Version:        1.5.1
-Release:        0.1%{?dist}
+Release:        0.2%{?dist}
 Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
@@ -245,6 +245,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Dec 29 2010 David Malcolm <dmalcolm@redhat.com> - 1:1.5.1-0.2
+- rebuild for newer python3
+
 * Wed Oct 27 2010 Thomas Spura <tomspur@fedoraproject.org> - 1:1.5.1-0.1
 - update to 1.5.1rc1
 - add python3 subpackage
