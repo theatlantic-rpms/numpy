@@ -9,7 +9,7 @@
 
 Name:           numpy
 Version:        1.5.1
-Release:        0.2%{?dist}
+Release:        0.3%{?dist}
 Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
@@ -159,6 +159,10 @@ rm -f %{buildroot}%{python_sitearch}/%{name}/THANKS.txt
 rm -f %{buildroot}%{python_sitearch}/%{name}/site.cfg.example
 
 %check
+# doc/io.py conflicts with the regular io module causing
+# AttributeError: 'module' object has no attribute 'BufferedIOBase' in tests
+rm doc/io.py*
+
 pushd doc &> /dev/null
 PYTHONPATH="%{buildroot}%{python_sitearch}" %{__python} -c "import pkg_resources, numpy ; numpy.test()" \
 %ifarch s390 s390x
@@ -172,7 +176,7 @@ pushd doc &> /dev/null
 # there is no python3-nose yet
 #PYTHONPATH="%{buildroot}%{python3_sitearch}" %{__python3} -c "import pkg_resources, numpy ; numpy.test()" \
 %ifarch s390 s390x
-|| :
+#|| :
 %endif
 # don't remove this comment
 popd &> /dev/null
@@ -245,6 +249,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Jan 13 2011 Dan Horák <dan[at]danny.cz> - 1:1.5.1-0.3
+- fix the AttributeError during tests
+- fix build on s390(x)
+
 * Wed Dec 29 2010 David Malcolm <dmalcolm@redhat.com> - 1:1.5.1-0.2
 - rebuild for newer python3
 
