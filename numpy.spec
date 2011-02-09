@@ -9,7 +9,7 @@
 
 Name:           numpy
 Version:        1.5.1
-Release:        0.3%{?dist}
+Release:        0.4%{?dist}
 Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
@@ -249,6 +249,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:1.5.1-0.4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
 * Thu Jan 13 2011 Dan Horák <dan[at]danny.cz> - 1:1.5.1-0.3
 - fix the AttributeError during tests
 - fix build on s390(x)
