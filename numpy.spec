@@ -5,11 +5,11 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-%global relc rc1
+#global relc rc1
 
 Name:           numpy
 Version:        1.5.1
-Release:        0.4%{?dist}
+Release:        1%{?dist}
 Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
@@ -249,6 +249,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Mar 30 2011 Orion Poplawski <orion@cora.nwra.com> - 1:1.5.1-1
+- Update to 1.5.1 final
+
 * Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:1.5.1-0.4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
