@@ -5,11 +5,11 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-%global relc b1
+%global relc b2
 
 Name:           numpy
 Version:        1.6.0
-Release:        0.1.b1%{?dist}
+Release:        0.2.%{relc}%{?dist}
 Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
@@ -17,9 +17,6 @@ Group:          Development/Languages
 License:        BSD
 URL:            http://numeric.scipy.org/
 Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
-# Patch https://github.com/rgommers/numpy/commit/a9fb1be2 to fix import errors
-Patch0:         numpy-1.6.0b1-import.patch
-
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
@@ -85,7 +82,6 @@ This package includes a version of f2py that works properly with NumPy.
 
 %prep
 %setup -q -n %{name}-%{version}%{?relc}
-%patch0 -p1 -b .import
 
 %if 0%{?with_python3}
 rm -rf %{py3dir}
@@ -160,9 +156,6 @@ rm -f %{buildroot}%{python_sitearch}/%{name}/LICENSE.txt
 rm -f %{buildroot}%{python_sitearch}/%{name}/README.txt
 rm -f %{buildroot}%{python_sitearch}/%{name}/THANKS.txt
 rm -f %{buildroot}%{python_sitearch}/%{name}/site.cfg.example
-
-# Incorrectly installs some docs here
-rm -r %{buildroot}%{python_sitearch}/doc
 
 %check
 # doc/io.py conflicts with the regular io module causing
@@ -254,6 +247,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Apr 4 2011 Orion Poplawski <orion@cora.nwra.com> - 1:1.6.0-0.2.b2
+- Update to 1.6.0b2
+- Drop import patch fixed upstream
+
 * Thu Mar 31 2011 Orion Poplawski <orion@cora.nwra.com> - 1:1.6.0-0.1.b1
 - Update to 1.6.0b1
 - Build python3  module with python3
