@@ -5,11 +5,11 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-%global relc b2
+%global relc %{nil}
 
 Name:           numpy
 Version:        1.6.0
-Release:        0.2.%{relc}%{?dist}
+Release:        1%{?dist}
 Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
@@ -247,6 +247,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon May 16 2011 Orion Poplawski <orion@cora.nwra.com> - 1:1.6.0-1
+- Update to 1.6.0 final
+
 * Mon Apr 4 2011 Orion Poplawski <orion@cora.nwra.com> - 1:1.6.0-0.2.b2
 - Update to 1.6.0b2
 - Drop import patch fixed upstream
