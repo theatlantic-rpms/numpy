@@ -8,8 +8,8 @@
 %global relc %{nil}
 
 Name:           numpy
-Version:        1.6.0
-Release:        2%{?dist}
+Version:        1.6.1
+Release:        1%{?dist}
 Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
@@ -247,6 +247,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Nov 7 2011 Orion Poplawski <orion@cora.nwra.com> - 1:1.6.1-1
+- Update to 1.6.1
+
 * Fri Jun 17 2011 Jon Ciesla <limb@jcomserv.net> - 1:1.6.0-2
 - Bump and rebuild for BZ 712251.
 
