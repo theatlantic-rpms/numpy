@@ -5,11 +5,11 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-%global relc rc1
+%global relc %{nil}
 
 Name:           numpy
 Version:        1.6.2
-Release:        0.1.rc1%{?dist}
+Release:        1%{?dist}
 Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
@@ -247,6 +247,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sun May 20 2012 Orion Poplawski <orion@cora.nwra.com> - 1:1.6.2-1
+- Update to 1.6.2 final
+
 * Sat May 12 2012 Orion Poplawski <orion@cora.nwra.com> - 1:1.6.2rc1-0.1
 - Update to 1.6.2rc1
 
