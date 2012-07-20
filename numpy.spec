@@ -9,7 +9,7 @@
 
 Name:           numpy
 Version:        1.6.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
@@ -247,6 +247,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Jul 20 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:1.6.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
 * Sun May 20 2012 Orion Poplawski <orion@cora.nwra.com> - 1:1.6.2-1
 - Update to 1.6.2 final
 
