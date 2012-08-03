@@ -1,4 +1,4 @@
-%if (0%{?fedora} > 12 || 0%{?rhel} > 5)
+%if 0%{?fedora} > 12
 %global with_python3 1
 %else
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
@@ -9,7 +9,7 @@
 
 Name:           numpy
 Version:        1.6.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
@@ -247,6 +247,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Aug  3 2012 David Malcolm <dmalcolm@redhat.com> - 1:1.6.2-3
+- remove rhel logic from with_python3 conditional
+
 * Fri Jul 20 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:1.6.2-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
