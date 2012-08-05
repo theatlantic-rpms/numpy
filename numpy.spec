@@ -9,7 +9,7 @@
 
 Name:           numpy
 Version:        1.6.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
@@ -247,6 +247,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sun Aug  5 2012 Thomas Spura <tomspur@fedoraproject.org> - 1:1.6.2-4
+- rebuild for https://fedoraproject.org/wiki/Features/Python_3.3
+
 * Fri Aug  3 2012 David Malcolm <dmalcolm@redhat.com> - 1:1.6.2-3
 - remove rhel logic from with_python3 conditional
 
