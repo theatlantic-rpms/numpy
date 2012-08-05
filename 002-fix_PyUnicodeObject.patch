@@ -1,24 +1,30 @@
---- numpy/core/src/multiarray/scalarapi.c.orig	2012-05-19 15:51:54.000000000 +0200
-+++ numpy/core/src/multiarray/scalarapi.c	2012-08-05 14:57:02.068276634 +0200
-@@ -652,6 +652,35 @@
+diff -up numpy-1.6.2/numpy/core/src/multiarray/scalarapi.c.fix_PyUnicodeObject numpy-1.6.2/numpy/core/src/multiarray/scalarapi.c
+--- numpy-1.6.2/numpy/core/src/multiarray/scalarapi.c.fix_PyUnicodeObject	2012-05-19 09:51:54.000000000 -0400
++++ numpy-1.6.2/numpy/core/src/multiarray/scalarapi.c	2012-08-05 16:07:29.956719007 -0400
+@@ -652,6 +652,40 @@ PyArray_Scalar(void *data, PyArray_Descr
              itemsize = (((itemsize - 1) >> 2) + 1) << 2;
          }
      }
 +#if PY_VERSION_HEX >= 0x03030000
 +    if (type_num == NPY_UNICODE) {
 +        PyObject *u, *args;
-+        int byteorder;
-+
-+#if NPY_BYTE_ORDER == NPY_LITTLE_ENDIAN
-+        byteorder = -1;
-+#elif NPY_BYTE_ORDER == NPY_BIG_ENDIAN
-+        byteorder = +1;
-+#else
-+        #error Endianness undefined ?
-+#endif
-+        if (swap) byteorder *= -1;
-+
-+        u = PyUnicode_DecodeUTF32(data, itemsize, NULL, &byteorder);
++        char *buffer;
++        if (swap) {
++            buffer = malloc(itemsize);
++            if (buffer == NULL) {
++                PyErr_NoMemory();
++                return NULL;
++            }
++            memcpy(buffer, data, itemsize);
++            byte_swap_vector(buffer, itemsize >> 2, 4);
++        } else {
++            buffer = data;
++        }
++        u = PyUnicode_FromKindAndData(PyUnicode_4BYTE_KIND, buffer,
++                itemsize >> 2);
++        if (swap) {
++            free(buffer);
++        }
 +        if (u == NULL) {
 +            return NULL;
 +        }
@@ -36,7 +42,7 @@
      if (type->tp_itemsize != 0) {
          /* String type */
          obj = type->tp_alloc(type, itemsize);
-@@ -688,6 +717,7 @@
+@@ -688,6 +722,7 @@ PyArray_Scalar(void *data, PyArray_Descr
              memcpy(destptr, data, itemsize);
              return obj;
          }
@@ -44,19 +50,18 @@
          else if (type_num == PyArray_UNICODE) {
              /* tp_alloc inherited from Python PyBaseObject_Type */
              PyUnicodeObject *uni = (PyUnicodeObject*)obj;
-@@ -759,6 +789,7 @@
+@@ -759,6 +794,7 @@ PyArray_Scalar(void *data, PyArray_Descr
  #endif
              return obj;
          }
-+#endif /* PY_VERSION_HEX < 0x03030000 */
++#endif // PY_VERSION_HEX < 0x03030000
          else {
              PyVoidScalarObject *vobj = (PyVoidScalarObject *)obj;
              vobj->base = NULL;
-diff --git numpy/core/src/multiarray/scalartypes.c.src numpy/core/src/multiarray/scalartypes.c.src
-index e547071..12745d7 100644
---- numpy/core/src/multiarray/scalartypes.c.src
-+++ numpy/core/src/multiarray/scalartypes.c.src
-@@ -2592,7 +2592,11 @@ finish:
+diff -up numpy-1.6.2/numpy/core/src/multiarray/scalartypes.c.src.fix_PyUnicodeObject numpy-1.6.2/numpy/core/src/multiarray/scalartypes.c.src
+--- numpy-1.6.2/numpy/core/src/multiarray/scalartypes.c.src.fix_PyUnicodeObject	2012-05-19 09:51:54.000000000 -0400
++++ numpy-1.6.2/numpy/core/src/multiarray/scalartypes.c.src	2012-08-05 16:05:40.868718999 -0400
+@@ -2323,7 +2323,11 @@ finish:
      *((npy_@name@ *)dest) = *((npy_@name@ *)src);
  #elif @default@ == 1 /* unicode and strings */
      if (itemsize == 0) { /* unicode */

@@ -9,7 +9,7 @@
 
 Name:           numpy
 Version:        1.6.2
-Release:        4%{?dist}
+Release:        5%{?dist}
 Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
@@ -17,14 +17,32 @@ Group:          Development/Languages
 License:        BSD
 URL:            http://numeric.scipy.org/
 Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
-# backport unicode fixes from upstream git repo
-# based on:
-# commit 4676f33f9c77b04e9c599e642de7ab465f48ea8f
-# Merge: fd15162 f2ac38f
-# Author: Travis E. Oliphant <teoliphant@gmail.com>
-# Date:   Fri Aug 3 22:46:21 2012 -0700
-# and commit a9d58ab42da8d2ed9071044848a54c5e066b557a
-Patch0:         numpy-1.6.2-unicode-python3.3.patch
+
+# Fix tests for empty shape, strides and suboffsets on Python 3.3
+# Backported from 02f3d1f73ca5957d3b5a3e575293e4d970de4267 upstream, see
+#   https://github.com/numpy/numpy/pull/367
+Patch1: 001-fix-test_multiarray.patch
+
+# Patches to fix PyUnicodeObject handling under 3.3, taken from upstream
+# See
+#   https://github.com/numpy/numpy/pull/372
+#
+# "FIX: Fixes the PyUnicodeObject problem in py-3.3"
+# based on upstream commit a9d58ab42da8d2ed9071044848a54c5e066b557a:
+Patch2: 002-fix_PyUnicodeObject.patch
+#
+# "FIX: Make sure the tests produce valid unicode"
+# copy of upstream commit 4234b6b13e3ee9da6fc1c24e9e8c442d77587837:
+Patch3: 4234b6b13e3ee9da6fc1c24e9e8c442d77587837.patch
+#
+# "Follow the C guidelines"
+# copy of upstream commit 09d2c51fa1d09b17060a8545b925f4dded9dedb1:
+Patch4: 09d2c51fa1d09b17060a8545b925f4dded9dedb1.patch
+#
+# "Use PyUnicode_DecodeUTF32()"
+# copy of upstream commit f2ac38f09ff258339ef44572a3abba02019e1f55:
+Patch5: f2ac38f09ff258339ef44572a3abba02019e1f55.patch
+
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
@@ -32,8 +50,9 @@ Requires:	python-nose
 %if 0%{?with_python3}
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
-#BuildRequires:  python3-nose
+BuildRequires:  python3-nose
 %endif
+BuildRequires:  Cython
 
 %description
 NumPy is a general-purpose array-processing package designed to
@@ -90,7 +109,24 @@ This package includes a version of f2py that works properly with NumPy.
 
 %prep
 %setup -q -n %{name}-%{version}%{?relc}
-%patch0 -p0
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+
+# Regenerate Cython c sources
+# This is needed with numpy-1.6.2.tar.gz with python 3.3 to avoid an exception
+# with an import call in the generated .c file in the tarball that uses the
+# old default of -1:
+#     File "mtrand.pyx", line 126, in init mtrand (numpy/random/mtrand/mtrand.c:20679)
+#   ValueError: level must be >= 0
+# due to the changes in import in 3.3
+# Regenerating with a newer Cython fixes it:
+pushd numpy/random/mtrand/
+rm -v mtrand.c
+cython mtrand.pyx
+popd
 
 %if 0%{?with_python3}
 rm -rf %{py3dir}
@@ -182,9 +218,9 @@ popd &> /dev/null
 %if 0%{?with_python3}
 pushd doc &> /dev/null
 # there is no python3-nose yet
-#PYTHONPATH="%{buildroot}%{python3_sitearch}" %{__python3} -c "import pkg_resources, numpy ; numpy.test()" \
+PYTHONPATH="%{buildroot}%{python3_sitearch}" %{__python3} -c "import pkg_resources, numpy ; numpy.test()" \
 %ifarch s390 s390x
-#|| :
+|| :
 %endif
 # don't remove this comment
 popd &> /dev/null
@@ -256,6 +292,11 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sun Aug  5 2012 David Malcolm <dmalcolm@redhat.com> - 1:1.6.2-5
+- rework patches for 3.3 to more directly reflect upstream's commits
+- re-enable test suite on python 3
+- forcibly regenerate Cython .c source to avoid import issues on Python 3.3
+
 * Sun Aug  5 2012 Thomas Spura <tomspur@fedoraproject.org> - 1:1.6.2-4
 - rebuild for https://fedoraproject.org/wiki/Features/Python_3.3
 - needs unicode patch
