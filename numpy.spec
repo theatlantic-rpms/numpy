@@ -32,7 +32,7 @@ Requires:	python-nose
 %if 0%{?with_python3}
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
-BuildRequires:  python3-nose
+#BuildRequires:  python3-nose
 %endif
 
 %description
@@ -182,9 +182,9 @@ popd &> /dev/null
 %if 0%{?with_python3}
 pushd doc &> /dev/null
 # there is no python3-nose yet
-PYTHONPATH="%{buildroot}%{python3_sitearch}" %{__python3} -c "import pkg_resources, numpy ; numpy.test()" \
+#PYTHONPATH="%{buildroot}%{python3_sitearch}" %{__python3} -c "import pkg_resources, numpy ; numpy.test()" \
 %ifarch s390 s390x
-|| :
+#|| :
 %endif
 # don't remove this comment
 popd &> /dev/null
@@ -259,7 +259,6 @@ rm -rf %{buildroot}
 * Sun Aug  5 2012 Thomas Spura <tomspur@fedoraproject.org> - 1:1.6.2-4
 - rebuild for https://fedoraproject.org/wiki/Features/Python_3.3
 - needs unicode patch
-- also run tests on python3
 
 * Fri Aug  3 2012 David Malcolm <dmalcolm@redhat.com> - 1:1.6.2-3
 - remove rhel logic from with_python3 conditional
