@@ -23,6 +23,7 @@ Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc
 # Merge: fd15162 f2ac38f
 # Author: Travis E. Oliphant <teoliphant@gmail.com>
 # Date:   Fri Aug 3 22:46:21 2012 -0700
+# and commit a9d58ab42da8d2ed9071044848a54c5e066b557a
 Patch0:         numpy-1.6.2-unicode-python3.3.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
