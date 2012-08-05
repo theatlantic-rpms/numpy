@@ -1,0 +1,54 @@
+--- numpy/core/src/multiarray/scalarapi.c.orig	2012-05-19 15:51:54.000000000 +0200
++++ numpy/core/src/multiarray/scalarapi.c	2012-08-05 14:57:02.068276634 +0200
+@@ -652,6 +652,35 @@
+             itemsize = (((itemsize - 1) >> 2) + 1) << 2;
+         }
+     }
++#if PY_VERSION_HEX >= 0x03030000
++    if (type_num == NPY_UNICODE) {
++        PyObject *u, *args;
++        int byteorder;
++
++#if NPY_BYTE_ORDER == NPY_LITTLE_ENDIAN
++        byteorder = -1;
++#elif NPY_BYTE_ORDER == NPY_BIG_ENDIAN
++        byteorder = +1;
++#else
++        #error Endianness undefined ?
++#endif
++        if (swap) byteorder *= -1;
++
++        u = PyUnicode_DecodeUTF32(data, itemsize, NULL, &byteorder);
++        if (u == NULL) {
++            return NULL;
++        }
++        args = Py_BuildValue("(O)", u);
++        if (args == NULL) {
++            Py_DECREF(u);
++            return NULL;
++        }
++        obj = type->tp_new(type, args, NULL);
++        Py_DECREF(u);
++        Py_DECREF(args);
++        return obj;
++    }
++#endif
+     if (type->tp_itemsize != 0) {
+         /* String type */
+         obj = type->tp_alloc(type, itemsize);
+@@ -688,6 +717,7 @@
+             memcpy(destptr, data, itemsize);
+             return obj;
+         }
++#if PY_VERSION_HEX < 0x03030000
+         else if (type_num == PyArray_UNICODE) {
+             /* tp_alloc inherited from Python PyBaseObject_Type */
+             PyUnicodeObject *uni = (PyUnicodeObject*)obj;
+@@ -759,6 +789,7 @@
+ #endif
+             return obj;
+         }
++#endif /* PY_VERSION_HEX < 0x03030000 */
+         else {
+             PyVoidScalarObject *vobj = (PyVoidScalarObject *)obj;
+             vobj->base = NULL;
