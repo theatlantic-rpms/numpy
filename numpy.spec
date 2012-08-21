@@ -5,11 +5,11 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-%global relc %{nil}
+%global relc b1
 
 Name:           numpy
-Version:        1.6.2
-Release:        5%{?dist}
+Version:        1.7.0
+Release:        0.1.%{relc}%{?dist}
 Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
@@ -34,14 +34,6 @@ Patch2: 002-fix_PyUnicodeObject.patch
 # "FIX: Make sure the tests produce valid unicode"
 # copy of upstream commit 4234b6b13e3ee9da6fc1c24e9e8c442d77587837:
 Patch3: 4234b6b13e3ee9da6fc1c24e9e8c442d77587837.patch
-#
-# "Follow the C guidelines"
-# copy of upstream commit 09d2c51fa1d09b17060a8545b925f4dded9dedb1:
-Patch4: 09d2c51fa1d09b17060a8545b925f4dded9dedb1.patch
-#
-# "Use PyUnicode_DecodeUTF32()"
-# copy of upstream commit f2ac38f09ff258339ef44572a3abba02019e1f55:
-Patch5: f2ac38f09ff258339ef44572a3abba02019e1f55.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -112,8 +104,6 @@ This package includes a version of f2py that works properly with NumPy.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
-%patch5 -p1
 
 # Regenerate Cython c sources
 # This is needed with numpy-1.6.2.tar.gz with python 3.3 to avoid an exception
@@ -292,6 +282,11 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Aug 21 2012 Orion Poplawski <orion@cora.nwra.com> - 1:1.7.0-0.1.b1
+- Update to 1.7.0b1
+- Rebase python 3.3 patchs to current git master
+- Drop patches applied upstream
+
 * Sun Aug  5 2012 David Malcolm <dmalcolm@redhat.com> - 1:1.6.2-5
 - rework patches for 3.3 to more directly reflect upstream's commits
 - re-enable test suite on python 3
