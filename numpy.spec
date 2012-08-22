@@ -9,7 +9,7 @@
 
 Name:           numpy
 Version:        1.7.0
-Release:        0.1.%{relc}%{?dist}
+Release:        0.2.%{relc}%{?dist}
 Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
@@ -104,6 +104,10 @@ This package includes a version of f2py that works properly with NumPy.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+
+# workaround for rhbz#849713
+# http://mail.scipy.org/pipermail/numpy-discussion/2012-July/063530.html
+rm numpy/distutils/command/__init__.py && touch numpy/distutils/command/__init__.py
 
 # Regenerate Cython c sources
 # This is needed with numpy-1.6.2.tar.gz with python 3.3 to avoid an exception
@@ -282,6 +286,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Aug 22 2012 Orion Poplawski <orion@nwra.com> - 1:1.7.0-0.2.b1
+- add workaround for rhbz#849713 (fixes FTBFS)
+
 * Tue Aug 21 2012 Orion Poplawski <orion@cora.nwra.com> - 1:1.7.0-0.1.b1
 - Update to 1.7.0b1
 - Rebase python 3.3 patchs to current git master
