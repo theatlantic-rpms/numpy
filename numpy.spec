@@ -9,7 +9,7 @@
 
 Name:           numpy
 Version:        1.7.0
-Release:        0.2.%{relc}%{?dist}
+Release:        0.3.%{relc}%{?dist}
 Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
@@ -34,6 +34,10 @@ Patch2: 002-fix_PyUnicodeObject.patch
 # "FIX: Make sure the tests produce valid unicode"
 # copy of upstream commit 4234b6b13e3ee9da6fc1c24e9e8c442d77587837:
 Patch3: 4234b6b13e3ee9da6fc1c24e9e8c442d77587837.patch
+#
+# Copy bytes object when unpickling an array
+# https://github.com/numpy/numpy/pull/371
+Patch4: numpy-pull371.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -104,23 +108,11 @@ This package includes a version of f2py that works properly with NumPy.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1 -b .pull371
 
 # workaround for rhbz#849713
 # http://mail.scipy.org/pipermail/numpy-discussion/2012-July/063530.html
 rm numpy/distutils/command/__init__.py && touch numpy/distutils/command/__init__.py
-
-# Regenerate Cython c sources
-# This is needed with numpy-1.6.2.tar.gz with python 3.3 to avoid an exception
-# with an import call in the generated .c file in the tarball that uses the
-# old default of -1:
-#     File "mtrand.pyx", line 126, in init mtrand (numpy/random/mtrand/mtrand.c:20679)
-#   ValueError: level must be >= 0
-# due to the changes in import in 3.3
-# Regenerating with a newer Cython fixes it:
-pushd numpy/random/mtrand/
-rm -v mtrand.c
-cython mtrand.pyx
-popd
 
 %if 0%{?with_python3}
 rm -rf %{py3dir}
@@ -286,6 +278,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Aug 22 2012 Orion Poplawski <orion@nwra.com> - 1:1.7.0-0.3.b1
+- Add patch from github pull 371 to fix python 3.3 pickle issue
+- Remove cython .c source regeneration - fails now
+
 * Wed Aug 22 2012 Orion Poplawski <orion@nwra.com> - 1:1.7.0-0.2.b1
 - add workaround for rhbz#849713 (fixes FTBFS)
 

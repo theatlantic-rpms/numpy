@@ -1,0 +1,33 @@
+diff -up numpy-1.7.0b1/numpy/core/src/multiarray/methods.c.pull371 numpy-1.7.0b1/numpy/core/src/multiarray/methods.c
+--- numpy-1.7.0b1/numpy/core/src/multiarray/methods.c.pull371	2012-08-12 21:53:17.000000000 -0600
++++ numpy-1.7.0b1/numpy/core/src/multiarray/methods.c	2012-08-22 22:07:17.287365026 -0600
+@@ -1587,8 +1587,9 @@ array_setstate(PyArrayObject *self, PyOb
+         /* Check that the string is not interned */
+         if (!_IsAligned(self) || swap || PyString_CHECK_INTERNED(rawdata)) {
+ #else
+-        /* Bytes are never interned */
+-        if (!_IsAligned(self) || swap) {
++        /* Bytes should always be considered immutable, but we just grab the
++         * pointer if they are large, to save memory. */
++        if (!_IsAligned(self) || swap || (len <= 1000)) {
+ #endif
+             npy_intp num = PyArray_NBYTES(self);
+             fa->data = PyDataMem_NEW(num);
+diff -up numpy-1.7.0b1/numpy/core/tests/test_regression.py.pull371 numpy-1.7.0b1/numpy/core/tests/test_regression.py
+--- numpy-1.7.0b1/numpy/core/tests/test_regression.py.pull371	2012-08-12 21:53:17.000000000 -0600
++++ numpy-1.7.0b1/numpy/core/tests/test_regression.py	2012-08-21 16:34:29.894303390 -0600
+@@ -1601,6 +1601,14 @@ class TestRegression(TestCase):
+         s = re.sub("a(.)", "\x01\\1", "a_")
+         assert_equal(s[0], "\x01")
+ 
++    def test_pickle_bytes_overwrite(self):
++        if sys.version_info[0] >= 3:
++            data = np.array([1], dtype='b')
++            data = pickle.loads(pickle.dumps(data))
++            data[0] = 0xdd
++            bytestring = "\x01  ".encode('ascii')
++            assert_equal(bytestring[0:1], '\x01'.encode('ascii'))
++
+     def test_structured_type_to_object(self):
+         a_rec = np.array([(0,1), (3,2)], dtype='i4,i8')
+         a_obj = np.empty((2,), dtype=object)
