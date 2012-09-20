@@ -5,11 +5,11 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-%global relc b1
+%global relc b2
 
 Name:           numpy
 Version:        1.7.0
-Release:        0.3.%{relc}%{?dist}
+Release:        0.4.%{relc}%{?dist}
 Epoch:		1
 Summary:        A fast multidimensional array facility for Python
 
@@ -17,27 +17,6 @@ Group:          Development/Languages
 License:        BSD
 URL:            http://numeric.scipy.org/
 Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
-
-# Fix tests for empty shape, strides and suboffsets on Python 3.3
-# Backported from 02f3d1f73ca5957d3b5a3e575293e4d970de4267 upstream, see
-#   https://github.com/numpy/numpy/pull/367
-Patch1: 001-fix-test_multiarray.patch
-
-# Patches to fix PyUnicodeObject handling under 3.3, taken from upstream
-# See
-#   https://github.com/numpy/numpy/pull/372
-#
-# "FIX: Fixes the PyUnicodeObject problem in py-3.3"
-# based on upstream commit a9d58ab42da8d2ed9071044848a54c5e066b557a:
-Patch2: 002-fix_PyUnicodeObject.patch
-#
-# "FIX: Make sure the tests produce valid unicode"
-# copy of upstream commit 4234b6b13e3ee9da6fc1c24e9e8c442d77587837:
-Patch3: 4234b6b13e3ee9da6fc1c24e9e8c442d77587837.patch
-#
-# Copy bytes object when unpickling an array
-# https://github.com/numpy/numpy/pull/371
-Patch4: numpy-pull371.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -105,10 +84,6 @@ This package includes a version of f2py that works properly with NumPy.
 
 %prep
 %setup -q -n %{name}-%{version}%{?relc}
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1 -b .pull371
 
 # workaround for rhbz#849713
 # http://mail.scipy.org/pipermail/numpy-discussion/2012-July/063530.html
@@ -278,6 +253,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Sep 20 2012 Orion Poplawski <orion@nwra.com> - 1:1.7.0-0.4.b2
+- Update to 1.7.0b2
+- Drop patches applied upstream
+
 * Wed Aug 22 2012 Orion Poplawski <orion@nwra.com> - 1:1.7.0-0.3.b1
 - Add patch from github pull 371 to fix python 3.3 pickle issue
 - Remove cython .c source regeneration - fails now
