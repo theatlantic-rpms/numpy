@@ -8,7 +8,7 @@
 #global relc rc1
 
 Name:           numpy
-Version:        1.7.0
+Version:        1.7.1
 Release:        1%{?dist}
 Epoch:		1
 Summary:        A fast multidimensional array facility for Python
@@ -253,6 +253,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Apr 10 2013 Orion Poplawski <orion@nwra.com> - 1:1.7.1-1
+- Update to 1.7.1
+
 * Sat Feb 9 2013 Orion Poplawski <orion@nwra.com> - 1:1.7.0-1
 - Update to 1.7.0 final
 
