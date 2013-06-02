@@ -9,8 +9,8 @@
 
 Name:           numpy
 Version:        1.7.1
-Release:        1%{?dist}
-Epoch:		1
+Release:        2%{?dist}
+Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
@@ -18,10 +18,8 @@ License:        BSD
 URL:            http://numeric.scipy.org/
 Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-
 BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
-Requires:	python-nose
+Requires:       python-nose
 %if 0%{?with_python3}
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
@@ -46,7 +44,7 @@ Summary:        f2py for numpy
 Group:          Development/Libraries
 Requires:       %{name} = %{epoch}:%{version}-%{release}
 Requires:       python-devel
-Provides:       f2py
+Provides:       f2py = %{version}-%{release}
 Obsoletes:      f2py <= 2.45.241_1927
 
 %description f2py
@@ -75,7 +73,7 @@ Summary:        f2py for numpy
 Group:          Development/Libraries
 Requires:       python3-numpy = %{epoch}:%{version}-%{release}
 Requires:       python3-devel
-Provides:       python3-f2py
+Provides:       python3-f2py = %{version}-%{release}
 Obsoletes:      python3-f2py <= 2.45.241_1927
 
 %description -n python3-numpy-f2py
@@ -108,7 +106,6 @@ env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
     %{__python} setup.py build
 
 %install
-rm -rf %{buildroot}
 # first install python3 so the binaries are overwritten by the python2 ones
 %if 0%{?with_python3}
 pushd %{py3dir}
@@ -188,11 +185,8 @@ popd &> /dev/null
 
 %endif # with_python3
 
-%clean
-rm -rf %{buildroot}
 
 %files
-%defattr(-,root,root,-)
 %doc docs-f2py doc/* LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
 %dir %{python_sitearch}/%{name}
 %{python_sitearch}/%{name}/*.py*
@@ -214,7 +208,6 @@ rm -rf %{buildroot}
 %{_includedir}/numpy
 
 %files f2py
-%defattr(-,root,root,-)
 %{_mandir}/man*/*
 %{_bindir}/f2py
 %{_bindir}/f2py.numpy
@@ -222,7 +215,6 @@ rm -rf %{buildroot}
 
 %if 0%{?with_python3}
 %files -n python3-numpy
-%defattr(-,root,root,-)
 %doc docs-f2py doc/* LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
 %{python3_sitearch}/%{name}/__pycache__/*
 %dir %{python3_sitearch}/%{name}
@@ -242,17 +234,17 @@ rm -rf %{buildroot}
 %{python3_sitearch}/%{name}/matrixlib
 %{python3_sitearch}/%{name}/polynomial
 %{python3_sitearch}/%{name}-*.egg-info
-#%{_includedir}/numpy
 
 %files -n python3-numpy-f2py
-%defattr(-,root,root,-)
-#%{_mandir}/man*/*
 %{_bindir}/f2py3
 %{python3_sitearch}/%{name}/f2py
 %endif # with_python3
 
 
 %changelog
+* Sun Jun 2 2013 Orion Poplawski <orion@nwra.com> - 1:1.7.1-2
+- Specfile cleanup (bug #969854)
+
 * Wed Apr 10 2013 Orion Poplawski <orion@nwra.com> - 1:1.7.1-1
 - Update to 1.7.1
 
@@ -342,7 +334,7 @@ rm -rf %{buildroot}
 - actually add the patch this time
 
 * Thu Jul 22 2010 David Malcolm <dmalcolm@redhat.com> - 1:1.4.1-5
-- fix segfault within %check on 2.7 (patch 2)
+- fix segfault within %%check on 2.7 (patch 2)
 
 * Wed Jul 21 2010 David Malcolm <dmalcolm@redhat.com> - 1:1.4.1-4
 - Rebuilt for https://fedoraproject.org/wiki/Features/Python_2.7/MassRebuild
