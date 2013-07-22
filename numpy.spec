@@ -343,7 +343,7 @@ popd &> /dev/null
 - ignore the "Ticket #1299 second test" failure on s390(x)
 
 * Thu Jun 24 2010 Jef Spaleta <jspaleta@fedoraprject.org> 1.4.1-2
-- source commit fix 
+- source commit fix
 
 * Thu Jun 24 2010 Jef Spaleta <jspaleta@fedoraprject.org> 1.4.1-1
 - New upstream release. Include backported doublefree patch
@@ -438,7 +438,7 @@ popd &> /dev/null
 - New upstream release
 
 * Tue Apr 17 2007 Jarod Wilson <jwilson@redhat.com> 1.0.1-4
-- Update gfortran patch to recognize latest gfortran f95 support 
+- Update gfortran patch to recognize latest gfortran f95 support
 - Resolves rhbz#236444
 
 * Fri Feb 23 2007 Jarod Wilson <jwilson@redhat.com> 1.0.1-3
