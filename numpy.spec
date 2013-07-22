@@ -9,7 +9,7 @@
 
 Name:           numpy
 Version:        1.7.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -109,7 +109,7 @@ env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
 # first install python3 so the binaries are overwritten by the python2 ones
 %if 0%{?with_python3}
 pushd %{py3dir}
-#%{__python} setup.py install -O1 --skip-build --root %{buildroot}
+#%%{__python} setup.py install -O1 --skip-build --root %%{buildroot}
 # skip-build currently broken, this works around it for now
 env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
@@ -121,7 +121,7 @@ install -D -p -m 0644 f2py.1 %{buildroot}%{_mandir}/man1/f2py.1
 pushd %{buildroot}%{_bindir} &> /dev/null
 popd &> /dev/null
 
-# Remove doc files. They should in in %doc
+# Remove doc files. They should in in %%doc
 rm -f %{buildroot}%{python3_sitearch}/%{name}/COMPATIBILITY
 rm -f %{buildroot}%{python3_sitearch}/%{name}/DEV_README.txt
 rm -f %{buildroot}%{python3_sitearch}/%{name}/INSTALL.txt
@@ -133,7 +133,7 @@ rm -f %{buildroot}%{python3_sitearch}/%{name}/site.cfg.example
 popd
 %endif # with_python3
 
-#%{__python} setup.py install -O1 --skip-build --root %{buildroot}
+#%%{__python} setup.py install -O1 --skip-build --root %%{buildroot}
 # skip-build currently broken, this works around it for now
 env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
@@ -151,7 +151,7 @@ popd &> /dev/null
 mkdir -p %{buildroot}/usr/include
 ln -s %{python_sitearch}/%{name}/core/include/numpy/ %{buildroot}/usr/include/numpy
 
-# Remove doc files. They should in in %doc
+# Remove doc files. They should in in %%doc
 rm -f %{buildroot}%{python_sitearch}/%{name}/COMPATIBILITY
 rm -f %{buildroot}%{python_sitearch}/%{name}/DEV_README.txt
 rm -f %{buildroot}%{python_sitearch}/%{name}/INSTALL.txt
@@ -242,6 +242,9 @@ popd &> /dev/null
 
 
 %changelog
+* Tue Jul 30 2013 Tomas Tomecek <ttomecek@redhat.com> - 1:1.7.1-3
+- Fix rpmlint warnings
+
 * Sun Jun 2 2013 Orion Poplawski <orion@nwra.com> - 1:1.7.1-2
 - Specfile cleanup (bug #969854)
 
@@ -458,7 +461,7 @@ popd &> /dev/null
 * Wed Oct 25 2006 Jarod Wilson <jwilson@redhat.com> 1.0-1
 - New upstream release
 
-* Tue Sep 06 2006 Jarod Wilson <jwilson@redhat.com> 0.9.8-1
+* Wed Sep 06 2006 Jarod Wilson <jwilson@redhat.com> 0.9.8-1
 - New upstream release
 
 * Wed Apr 26 2006 Ignacio Vazquez-Abrams <ivazquez@ivazquez.net> 0.9.6-1
