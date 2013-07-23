@@ -18,6 +18,7 @@ Group:          Development/Languages
 License:        BSD and Python
 URL:            http://numeric.scipy.org/
 Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
+Patch1:         f2py-shebang.patch
 
 BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
 Requires:       python-nose
@@ -83,7 +84,7 @@ This package includes a version of f2py that works properly with NumPy.
 
 %prep
 %setup -q -n %{name}-%{version}%{?relc}
-
+%patch1 -p1
 # workaround for rhbz#849713
 # http://mail.scipy.org/pipermail/numpy-discussion/2012-July/063530.html
 rm numpy/distutils/command/__init__.py && touch numpy/distutils/command/__init__.py
@@ -246,6 +247,7 @@ popd &> /dev/null
 * Tue Jul 30 2013 Tomas Tomecek <ttomecek@redhat.com> - 1:1.7.1-3
 - Fix rpmlint warnings
 - Update License
+- Apply patch: change shebang of f2py to use binary directly
 
 * Sun Jun 2 2013 Orion Poplawski <orion@nwra.com> - 1:1.7.1-2
 - Specfile cleanup (bug #969854)
