@@ -14,7 +14,8 @@ Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
-License:        BSD
+# Everything is BSD except for class SafeEval in numpy/lib/utils.py which is Python
+License:        BSD and Python
 URL:            http://numeric.scipy.org/
 Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
 
@@ -244,6 +245,7 @@ popd &> /dev/null
 %changelog
 * Tue Jul 30 2013 Tomas Tomecek <ttomecek@redhat.com> - 1:1.7.1-3
 - Fix rpmlint warnings
+- Update License
 
 * Sun Jun 2 2013 Orion Poplawski <orion@nwra.com> - 1:1.7.1-2
 - Specfile cleanup (bug #969854)
