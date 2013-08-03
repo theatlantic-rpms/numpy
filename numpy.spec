@@ -9,7 +9,7 @@
 
 Name:           numpy
 Version:        1.7.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -244,6 +244,9 @@ popd &> /dev/null
 
 
 %changelog
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:1.7.1-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Tue Jul 30 2013 Tomas Tomecek <ttomecek@redhat.com> - 1:1.7.1-3
 - Fix rpmlint warnings
 - Update License
