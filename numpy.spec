@@ -9,14 +9,14 @@
 
 Name:           numpy
 Version:        1.7.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
 # Everything is BSD except for class SafeEval in numpy/lib/utils.py which is Python
 License:        BSD and Python
-URL:            http://numeric.scipy.org/
+URL:            http://www.numpy.org/
 Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
 Patch1:         f2py-shebang.patch
 
@@ -244,6 +244,9 @@ popd &> /dev/null
 
 
 %changelog
+* Tue Aug 27 2013 Jon Ciesla <limburgher@gmail.com> - 1:1.7.1-5
+- URL Fix, BZ 1001337
+
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:1.7.1-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
