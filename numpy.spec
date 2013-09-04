@@ -5,11 +5,11 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-#global relc rc1
+%global relc b1
 
 Name:           numpy
-Version:        1.7.1
-Release:        5%{?dist}
+Version:        1.8.0
+Release:        0.1.b1%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -18,7 +18,6 @@ Group:          Development/Languages
 License:        BSD and Python
 URL:            http://www.numpy.org/
 Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
-Patch1:         f2py-shebang.patch
 
 BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
 Requires:       python-nose
@@ -84,7 +83,6 @@ This package includes a version of f2py that works properly with NumPy.
 
 %prep
 %setup -q -n %{name}-%{version}%{?relc}
-%patch1 -p1
 # workaround for rhbz#849713
 # http://mail.scipy.org/pipermail/numpy-discussion/2012-July/063530.html
 rm numpy/distutils/command/__init__.py && touch numpy/distutils/command/__init__.py
@@ -244,6 +242,10 @@ popd &> /dev/null
 
 
 %changelog
+* Wed Sep 4 2013 Orion Poplawski <orion@nwra.com> - 1:1.8.0-0.1.b1
+- Update to 1.8.0b1
+- Drop f2py patch applied upstream
+
 * Tue Aug 27 2013 Jon Ciesla <limburgher@gmail.com> - 1:1.7.1-5
 - URL Fix, BZ 1001337
 
