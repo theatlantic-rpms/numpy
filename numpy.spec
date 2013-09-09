@@ -5,11 +5,11 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-%global relc b1
+%global relc b2
 
 Name:           numpy
 Version:        1.8.0
-Release:        0.1.b1%{?dist}
+Release:        0.2.b2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -242,6 +242,9 @@ popd &> /dev/null
 
 
 %changelog
+* Sun Sep 8 2013 Orion Poplawski <orion@nwra.com> - 1:1.8.0-0.2.b2
+- Update to 1.8.0b2
+
 * Wed Sep 4 2013 Orion Poplawski <orion@nwra.com> - 1:1.8.0-0.1.b1
 - Update to 1.8.0b1
 - Drop f2py patch applied upstream
