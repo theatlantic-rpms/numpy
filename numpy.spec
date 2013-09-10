@@ -9,7 +9,7 @@
 
 Name:           numpy
 Version:        1.8.0
-Release:        0.2.b2%{?dist}
+Release:        0.3.b2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -86,6 +86,8 @@ This package includes a version of f2py that works properly with NumPy.
 # workaround for rhbz#849713
 # http://mail.scipy.org/pipermail/numpy-discussion/2012-July/063530.html
 rm numpy/distutils/command/__init__.py && touch numpy/distutils/command/__init__.py
+
+sed -i 's|/usr/lib64|%{_libdir}|' site.cfg
 
 %if 0%{?with_python3}
 rm -rf %{py3dir}
@@ -242,6 +244,9 @@ popd &> /dev/null
 
 
 %changelog
+* Tue Sep 10 2013 Jon Ciesla <limburgher@gmail.com> - 1:1.8.0-0.3.b2
+- Fix libdir path in site.cfg, BZ 1006242.
+
 * Sun Sep 8 2013 Orion Poplawski <orion@nwra.com> - 1:1.8.0-0.2.b2
 - Update to 1.8.0b2
 
