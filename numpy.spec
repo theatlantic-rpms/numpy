@@ -9,7 +9,7 @@
 
 Name:           numpy
 Version:        1.8.0
-Release:        0.3.b2%{?dist}
+Release:        0.4.b2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -244,6 +244,9 @@ popd &> /dev/null
 
 
 %changelog
+* Sat Sep 21 2013 David Tardon <dtardon@redhat.com> - 1:1.8.0-0.4.b2
+- rebuild for atlas 3.10
+
 * Tue Sep 10 2013 Jon Ciesla <limburgher@gmail.com> - 1:1.8.0-0.3.b2
 - Fix libdir path in site.cfg, BZ 1006242.
 
