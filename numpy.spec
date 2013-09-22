@@ -9,7 +9,7 @@
 
 Name:           numpy
 Version:        1.8.0
-Release:        0.4.b2%{?dist}
+Release:        0.5.b2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -87,6 +87,10 @@ This package includes a version of f2py that works properly with NumPy.
 # http://mail.scipy.org/pipermail/numpy-discussion/2012-July/063530.html
 rm numpy/distutils/command/__init__.py && touch numpy/distutils/command/__init__.py
 
+# Atlas 3.10 library names
+%if 0%{?fedora} >= 21
+sed -i '/^libraries.*atlas/s/=.*/= tatlas/' site.cfg
+%endif
 sed -i 's|/usr/lib64|%{_libdir}|' site.cfg
 
 %if 0%{?with_python3}
@@ -244,6 +248,9 @@ popd &> /dev/null
 
 
 %changelog
+* Sun Sep 22 2013 Orion Poplawski <orion@nwra.com> - 1:1.8.0-0.5.b2
+- Update site.cfg for new atlas library names
+
 * Sat Sep 21 2013 David Tardon <dtardon@redhat.com> - 1:1.8.0-0.4.b2
 - rebuild for atlas 3.10
 
