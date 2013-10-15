@@ -5,11 +5,11 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-%global relc b2
+%global relc rc2
 
 Name:           numpy
 Version:        1.8.0
-Release:        0.6.b2%{?dist}
+Release:        0.7.rc2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -89,15 +89,12 @@ rm numpy/distutils/command/__init__.py && touch numpy/distutils/command/__init__
 
 # Atlas 3.10 library names
 %if 0%{?fedora} >= 21
-sed -i '/^libraries.*atlas/s/=.*/= tatlas/' site.cfg
-sed -i '/tatlas/alibrary_dirs = %{_libdir}/atlas' site.cfg
-%endif
-sed -i 's|/usr/lib64|%{_libdir}|' site.cfg
 cat >> site.cfg <<EOF
 [atlas]
 library_dirs = %{_libdir}/atlas
 atlas_libs = tatlas
 EOF
+%endif
 
 %if 0%{?with_python3}
 rm -rf %{py3dir}
@@ -254,6 +251,10 @@ popd &> /dev/null
 
 
 %changelog
+* Mon Oct 14 2013 Orion Poplawski <orion@nwra.com> - 1:1.8.0-0.7.rc2
+- Update to 1.8.0rc2
+- Create clean site.cfg
+
 * Mon Sep 23 2013 Orion Poplawski <orion@nwra.com> - 1:1.8.0-0.6.b2
 - Add [atlas] to site.cfg for new atlas library names
 
