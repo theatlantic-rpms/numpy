@@ -92,7 +92,7 @@ rm numpy/distutils/command/__init__.py && touch numpy/distutils/command/__init__
 cat >> site.cfg <<EOF
 [atlas]
 library_dirs = %{_libdir}/atlas
-atlas_libs = tatlas
+atlas_libs = satlas
 EOF
 %endif
 
@@ -254,6 +254,7 @@ popd &> /dev/null
 * Mon Oct 14 2013 Orion Poplawski <orion@nwra.com> - 1:1.8.0-0.7.rc2
 - Update to 1.8.0rc2
 - Create clean site.cfg
+- Use serial atlas
 
 * Mon Sep 23 2013 Orion Poplawski <orion@nwra.com> - 1:1.8.0-0.6.b2
 - Add [atlas] to site.cfg for new atlas library names
