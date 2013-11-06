@@ -9,7 +9,7 @@
 
 Name:           numpy
 Version:        1.8.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -196,7 +196,7 @@ popd &> /dev/null
 
 
 %files
-%doc docs-f2py doc/* LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
+%doc doc/* LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
 %dir %{python_sitearch}/%{name}
 %{python_sitearch}/%{name}/*.py*
 %{python_sitearch}/%{name}/core
@@ -217,6 +217,7 @@ popd &> /dev/null
 %{_includedir}/numpy
 
 %files f2py
+%doc docs-f2py
 %{_mandir}/man*/*
 %{_bindir}/f2py
 %{_bindir}/f2py.numpy
@@ -224,7 +225,7 @@ popd &> /dev/null
 
 %if 0%{?with_python3}
 %files -n python3-numpy
-%doc docs-f2py doc/* LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
+%doc doc/* LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
 %{python3_sitearch}/%{name}/__pycache__/*
 %dir %{python3_sitearch}/%{name}
 %{python3_sitearch}/%{name}/*.py*
@@ -245,12 +246,16 @@ popd &> /dev/null
 %{python3_sitearch}/%{name}-*.egg-info
 
 %files -n python3-numpy-f2py
+%doc docs-f2py
 %{_bindir}/f2py3
 %{python3_sitearch}/%{name}/f2py
 %endif # with_python3
 
 
 %changelog
+* Wed Nov 6 2013 Orion Poplawski <orion@nwra.com> - 1:1.8.0-2
+- Move f2py documentation to f2py package (bug #1027394)
+
 * Wed Oct 30 2013 Orion Poplawski <orion@nwra.com> - 1:1.8.0-1
 - Update to 1.8.0 final
 
