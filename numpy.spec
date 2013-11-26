@@ -9,7 +9,7 @@
 
 Name:           numpy
 Version:        1.8.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -125,19 +125,9 @@ env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
     %{__python3} setup.py install --root %{buildroot}
 rm -rf docs-f2py ; mv %{buildroot}%{python3_sitearch}/%{name}/f2py/docs docs-f2py
 mv -f %{buildroot}%{python3_sitearch}/%{name}/f2py/f2py.1 f2py.1
-rm -rf doc ; mv -f %{buildroot}%{python3_sitearch}/%{name}/doc .
 install -D -p -m 0644 f2py.1 %{buildroot}%{_mandir}/man1/f2py.1
 pushd %{buildroot}%{_bindir} &> /dev/null
 popd &> /dev/null
-
-# Remove doc files. They should in in %%doc
-rm -f %{buildroot}%{python3_sitearch}/%{name}/COMPATIBILITY
-rm -f %{buildroot}%{python3_sitearch}/%{name}/DEV_README.txt
-rm -f %{buildroot}%{python3_sitearch}/%{name}/INSTALL.txt
-rm -f %{buildroot}%{python3_sitearch}/%{name}/LICENSE.txt
-rm -f %{buildroot}%{python3_sitearch}/%{name}/README.txt
-rm -f %{buildroot}%{python3_sitearch}/%{name}/THANKS.txt
-rm -f %{buildroot}%{python3_sitearch}/%{name}/site.cfg.example
 
 popd
 %endif # with_python3
@@ -149,7 +139,6 @@ env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
     %{__python} setup.py install --root %{buildroot}
 rm -rf docs-f2py ; mv %{buildroot}%{python_sitearch}/%{name}/f2py/docs docs-f2py
 mv -f %{buildroot}%{python_sitearch}/%{name}/f2py/f2py.1 f2py.1
-rm -rf doc ; mv -f %{buildroot}%{python_sitearch}/%{name}/doc .
 install -D -p -m 0644 f2py.1 %{buildroot}%{_mandir}/man1/f2py.1
 pushd %{buildroot}%{_bindir} &> /dev/null
 # symlink for anyone who was using f2py.numpy
@@ -160,20 +149,8 @@ popd &> /dev/null
 mkdir -p %{buildroot}/usr/include
 ln -s %{python_sitearch}/%{name}/core/include/numpy/ %{buildroot}/usr/include/numpy
 
-# Remove doc files. They should in in %%doc
-rm -f %{buildroot}%{python_sitearch}/%{name}/COMPATIBILITY
-rm -f %{buildroot}%{python_sitearch}/%{name}/DEV_README.txt
-rm -f %{buildroot}%{python_sitearch}/%{name}/INSTALL.txt
-rm -f %{buildroot}%{python_sitearch}/%{name}/LICENSE.txt
-rm -f %{buildroot}%{python_sitearch}/%{name}/README.txt
-rm -f %{buildroot}%{python_sitearch}/%{name}/THANKS.txt
-rm -f %{buildroot}%{python_sitearch}/%{name}/site.cfg.example
 
 %check
-# doc/io.py conflicts with the regular io module causing
-# AttributeError: 'module' object has no attribute 'BufferedIOBase' in tests
-rm doc/io.py*
-
 pushd doc &> /dev/null
 PYTHONPATH="%{buildroot}%{python_sitearch}" %{__python} -c "import pkg_resources, numpy ; numpy.test()" \
 %ifarch s390 s390x
@@ -196,11 +173,12 @@ popd &> /dev/null
 
 
 %files
-%doc doc/* LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
+%doc doc/cython LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
 %dir %{python_sitearch}/%{name}
 %{python_sitearch}/%{name}/*.py*
 %{python_sitearch}/%{name}/core
 %{python_sitearch}/%{name}/distutils
+%{python_sitearch}/%{name}/doc
 %{python_sitearch}/%{name}/fft
 %{python_sitearch}/%{name}/lib
 %{python_sitearch}/%{name}/linalg
@@ -225,12 +203,13 @@ popd &> /dev/null
 
 %if 0%{?with_python3}
 %files -n python3-numpy
-%doc doc/* LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
+%doc doc/cython LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
 %{python3_sitearch}/%{name}/__pycache__/*
 %dir %{python3_sitearch}/%{name}
 %{python3_sitearch}/%{name}/*.py*
 %{python3_sitearch}/%{name}/core
 %{python3_sitearch}/%{name}/distutils
+%{python3_sitearch}/%{name}/doc
 %{python3_sitearch}/%{name}/fft
 %{python3_sitearch}/%{name}/lib
 %{python3_sitearch}/%{name}/linalg
@@ -253,6 +232,9 @@ popd &> /dev/null
 
 
 %changelog
+* Mon Nov 25 2013 Orion Poplawski <orion@nwra.com> - 1:1.8.0-3
+- Ship doc module (bug #1034357)
+
 * Wed Nov 6 2013 Orion Poplawski <orion@nwra.com> - 1:1.8.0-2
 - Move f2py documentation to f2py package (bug #1027394)
 
