@@ -241,7 +241,7 @@ popd &> /dev/null
 
 
 %changelog
-* Thomas Spura <tomspur@fedoraproject.org> - 1:1.8.0-4
+* Mon Feb 10 2014 Thomas Spura <tomspur@fedoraproject.org> - 1:1.8.0-4
 - Fix CVE-2014-1858, CVE-2014-1859: #1062009, #1062359
 
 * Mon Nov 25 2013 Orion Poplawski <orion@nwra.com> - 1:1.8.0-3
