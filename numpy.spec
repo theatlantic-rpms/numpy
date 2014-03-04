@@ -9,7 +9,7 @@
 
 Name:           numpy
 Version:        1.8.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -213,7 +213,7 @@ popd &> /dev/null
 %if 0%{?with_python3}
 %files -n python3-numpy
 %doc doc/cython LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
-%{python3_sitearch}/%{name}/__pycache__/*
+%{python3_sitearch}/%{name}/__pycache__
 %dir %{python3_sitearch}/%{name}
 %{python3_sitearch}/%{name}/*.py*
 %{python3_sitearch}/%{name}/core
@@ -241,6 +241,9 @@ popd &> /dev/null
 
 
 %changelog
+* Tue Mar 4 2014 Orion Poplawski <orion@nwra.com> - 1:1.8.0-5
+- Fix __pycache__ ownership (bug #1072467)
+
 * Mon Feb 10 2014 Thomas Spura <tomspur@fedoraproject.org> - 1:1.8.0-4
 - Fix CVE-2014-1858, CVE-2014-1859: #1062009, #1062359
 
