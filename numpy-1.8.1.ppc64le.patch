@@ -1,0 +1,131 @@
+@@ -, +, @@ 
+---
+ doc/release/1.8.1-notes.rst               |    4 ++++
+ numpy/core/include/numpy/npy_cpu.h        |    3 +++
+ numpy/core/include/numpy/npy_endian.h     |    3 ++-
+ numpy/core/setup.py                       |    2 +-
+ numpy/core/setup_common.py                |    4 ++++
+ numpy/core/src/npymath/ieee754.c.src      |    3 ++-
+ numpy/core/src/npymath/npy_math_private.h |    3 ++-
+ numpy/core/src/private/npy_fpmath.h       |    5 ++++-
+ 8 files changed, 22 insertions(+), 5 deletions(-)
+--- numpy-1.8.1/numpy/core/setup_common.py	
++++ numpy-1.8.1/numpy/core/setup_common.py	
+@@ -256,6 +256,8 @@ _IEEE_QUAD_PREC_BE = ['300', '031', '326
+ _IEEE_QUAD_PREC_LE = _IEEE_QUAD_PREC_BE[::-1]
+ _DOUBLE_DOUBLE_BE = ['301', '235', '157', '064', '124', '000', '000', '000'] + \
+                     ['000'] * 8
++_DOUBLE_DOUBLE_LE = ['000', '000', '000', '124', '064', '157', '235', '301'] + \
++                    ['000'] * 8
+ 
+ def long_double_representation(lines):
+     """Given a binary dump as given by GNU od -b, look for long double
+@@ -295,6 +297,8 @@ def long_double_representation(lines):
+                         return 'IEEE_QUAD_LE'
+                     elif read[8:-8] == _DOUBLE_DOUBLE_BE:
+                         return 'DOUBLE_DOUBLE_BE'
++                    elif read[8:-8] == _DOUBLE_DOUBLE_LE:
++                        return 'DOUBLE_DOUBLE_LE'
+                 elif read[:16] == _BEFORE_SEQ:
+                     if read[16:-8] == _IEEE_DOUBLE_LE:
+                         return 'IEEE_DOUBLE_LE'
+--- numpy-1.8.1/numpy/core/include/numpy/npy_cpu.h	
++++ numpy-1.8.1/numpy/core/include/numpy/npy_cpu.h	
+@@ -5,6 +5,7 @@ 
+  *              NPY_CPU_AMD64
+  *              NPY_CPU_PPC
+  *              NPY_CPU_PPC64
++ *              NPY_CPU_PPC64LE
+  *              NPY_CPU_SPARC
+  *              NPY_CPU_S390
+  *              NPY_CPU_IA64
+@@ -41,6 +42,8 @@ 
+      * _ARCH_PPC is used by at least gcc on AIX
+      */
+     #define NPY_CPU_PPC
++#elif defined(__ppc64le__)
++    #define NPY_CPU_PPC64LE
+ #elif defined(__ppc64__)
+     #define NPY_CPU_PPC64
+ #elif defined(__sparc__) || defined(__sparc)
+--- numpy-1.8.1/numpy/core/include/numpy/npy_endian.h	
++++ numpy-1.8.1/numpy/core/include/numpy/npy_endian.h	
+@@ -27,7 +27,8 @@ 
+             || defined(NPY_CPU_ARMEL)   \
+             || defined(NPY_CPU_AARCH64) \
+             || defined(NPY_CPU_SH_LE)   \
+-            || defined(NPY_CPU_MIPSEL)
++            || defined(NPY_CPU_MIPSEL)  \
++            || defined(NPY_CPU_PPC64LE)
+         #define NPY_BYTE_ORDER NPY_LITTLE_ENDIAN
+     #elif defined(NPY_CPU_PPC)          \
+             || defined(NPY_CPU_SPARC)   \
+--- numpy-1.8.1/numpy/core/setup.py	
++++ numpy-1.8.1/numpy/core/setup.py	
+@@ -466,7 +466,7 @@ def configuration(parent_package='',top_
+                            'MOTOROLA_EXTENDED_12_BYTES_BE',
+                            'IEEE_QUAD_LE', 'IEEE_QUAD_BE',
+                            'IEEE_DOUBLE_LE', 'IEEE_DOUBLE_BE',
+-                           'DOUBLE_DOUBLE_BE']:
++                           'DOUBLE_DOUBLE_BE', 'DOUBLE_DOUBLE_LE']:
+                     moredefs.append(('HAVE_LDOUBLE_%s' % rep, 1))
+                 else:
+                     raise ValueError("Unrecognized long double format: %s" % rep)
+--- numpy-1.8.1/numpy/core/src/npymath/ieee754.c.src	
++++ numpy-1.8.1/numpy/core/src/npymath/ieee754.c.src	
+@@ -133,7 +133,8 @@ float _nextf(float x, int p)
+     return x;
+ }
+ 
+-#ifdef HAVE_LDOUBLE_DOUBLE_DOUBLE_BE
++#if defined(HAVE_LDOUBLE_DOUBLE_DOUBLE_BE) || \
++    defined(HAVE_LDOUBLE_DOUBLE_DOUBLE_LE)
+ 
+ /*
+  * FIXME: this is ugly and untested. The asm part only works with gcc, and we
+--- numpy-1.8.1/numpy/core/src/npymath/npy_math_private.h	
++++ numpy-1.8.1/numpy/core/src/npymath/npy_math_private.h	
+@@ -435,7 +435,8 @@ do {
+     typedef npy_uint32 ldouble_sign_t;
+ #endif
+ 
+-#ifndef HAVE_LDOUBLE_DOUBLE_DOUBLE_BE
++#if !defined(HAVE_LDOUBLE_DOUBLE_DOUBLE_BE) && \
++    !defined(HAVE_LDOUBLE_DOUBLE_DOUBLE_LE)
+ /* Get the sign bit of x. x should be of type IEEEl2bitsrep */
+ #define GET_LDOUBLE_SIGN(x) \
+     (((x).a[LDBL_SIGN_INDEX] & LDBL_SIGN_MASK) >> LDBL_SIGN_SHIFT)
+--- numpy-1.8.1/numpy/core/src/private/npy_fpmath.h	
++++ numpy-1.8.1/numpy/core/src/private/npy_fpmath.h	
+@@ -29,6 +29,8 @@ 
+             #define HAVE_LDOUBLE_INTEL_EXTENDED_16_BYTES_LE
+         #elif defined(NPY_CPU_PPC) || defined(NPY_CPU_PPC64)
+             #define HAVE_LDOUBLE_IEEE_DOUBLE_16_BYTES_BE
++        #elif defined(NPY_CPU_PPC64LE)
++            #define HAVE_LDOUBLE_IEEE_DOUBLE_16_BYTES_LE
+         #endif
+     #endif
+ #endif
+@@ -41,7 +43,8 @@ 
+       defined(HAVE_LDOUBLE_INTEL_EXTENDED_16_BYTES_LE) || \
+       defined(HAVE_LDOUBLE_INTEL_EXTENDED_12_BYTES_LE) || \
+       defined(HAVE_LDOUBLE_MOTOROLA_EXTENDED_12_BYTES_BE) || \
+-      defined(HAVE_LDOUBLE_DOUBLE_DOUBLE_BE))
++      defined(HAVE_LDOUBLE_DOUBLE_DOUBLE_BE) || \
++      defined(HAVE_LDOUBLE_DOUBLE_DOUBLE_LE))
+     #error No long double representation defined
+ #endif
+ 
+--- numpy-1.8.1/doc/release/1.8.1-notes.rst	
++++ numpy-1.8.1/doc/release/1.8.1-notes.rst	
+@@ -81,6 +81,10 @@ calls to ``numpy.distutils.system_info.g
+ print anything on the output. This is mostly for other packages using
+ numpy.distutils.
+ 
++Build system
++~~~~~~~~~~~~
++Added experimental support for the ppc64le architecture.
++
+ Deprecations
+ ============
+ 

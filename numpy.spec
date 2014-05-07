@@ -9,7 +9,7 @@
 
 Name:           numpy
 Version:        1.8.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -18,6 +18,8 @@ Group:          Development/Languages
 License:        BSD and Python
 URL:            http://www.numpy.org/
 Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
+
+Patch0:         numpy-1.8.1.ppc64le.patch
 
 BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
 Requires:       python-nose
@@ -83,6 +85,9 @@ This package includes a version of f2py that works properly with NumPy.
 
 %prep
 %setup -q -n %{name}-%{version}%{?relc}
+
+%patch0 -p1
+
 # workaround for rhbz#849713
 # http://mail.scipy.org/pipermail/numpy-discussion/2012-July/063530.html
 rm numpy/distutils/command/__init__.py && touch numpy/distutils/command/__init__.py
@@ -232,6 +237,9 @@ popd &> /dev/null
 
 
 %changelog
+* Wed May 07 2014 Jaromir Capik <jcapik@redhat.com> - 1:1.8.1-2
+- Fixing FTBFS on ppc64le (#1078354)
+
 * Tue Mar 25 2014 Orion Poplawski <orion@nwra.com> - 1:1.8.1-1
 - Update to 1.8.1
 
