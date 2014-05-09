@@ -9,7 +9,7 @@
 
 Name:           numpy
 Version:        1.8.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -237,6 +237,9 @@ popd &> /dev/null
 
 
 %changelog
+* Fri May 9 2014 Orion Poplawski <orion@nwra.com> - 1:1.8.1-3
+- Rebuild for Python 3.4
+
 * Wed May 07 2014 Jaromir Capik <jcapik@redhat.com> - 1:1.8.1-2
 - Fixing FTBFS on ppc64le (#1078354)
 
