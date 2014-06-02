@@ -109,13 +109,13 @@ cp -a . %{py3dir}
 %build
 %if 0%{?with_python3}
 pushd %{py3dir}
-env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
+env ATLAS=%{_libdir} BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
     %{__python3} setup.py build
 popd
 %endif # with _python3
 
-env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
+env ATLAS=%{_libdir} BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
     %{__python} setup.py build
 
