@@ -5,11 +5,11 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-%global relc %{nil}
+%global relc rc1
 
 Name:           numpy
-Version:        1.8.2
-Release:        2%{?dist}
+Version:        1.9.0
+Release:        0.1.rc1%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -18,8 +18,6 @@ Group:          Development/Languages
 License:        BSD and Python
 URL:            http://www.numpy.org/
 Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
-
-Patch0:         numpy-1.8.1.ppc64le.patch
 
 BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
 Requires:       python-nose
@@ -86,8 +84,6 @@ This package includes a version of f2py that works properly with NumPy.
 %prep
 %setup -q -n %{name}-%{version}%{?relc}
 
-%patch0 -p1
-
 # workaround for rhbz#849713
 # http://mail.scipy.org/pipermail/numpy-discussion/2012-July/063530.html
 rm numpy/distutils/command/__init__.py && touch numpy/distutils/command/__init__.py
@@ -128,9 +124,6 @@ pushd %{py3dir}
 env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
     %{__python3} setup.py install --root %{buildroot}
-rm -rf docs-f2py ; mv %{buildroot}%{python3_sitearch}/%{name}/f2py/docs docs-f2py
-mv -f %{buildroot}%{python3_sitearch}/%{name}/f2py/f2py.1 f2py.1
-install -D -p -m 0644 f2py.1 %{buildroot}%{_mandir}/man1/f2py.1
 pushd %{buildroot}%{_bindir} &> /dev/null
 popd &> /dev/null
 
@@ -142,13 +135,11 @@ popd
 env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
     %{__python} setup.py install --root %{buildroot}
-rm -rf docs-f2py ; mv %{buildroot}%{python_sitearch}/%{name}/f2py/docs docs-f2py
-mv -f %{buildroot}%{python_sitearch}/%{name}/f2py/f2py.1 f2py.1
-install -D -p -m 0644 f2py.1 %{buildroot}%{_mandir}/man1/f2py.1
 pushd %{buildroot}%{_bindir} &> /dev/null
 # symlink for anyone who was using f2py.numpy
 ln -s f2py f2py.numpy
 popd &> /dev/null
+install -D -p -m 0644 doc/f2py/f2py.1 %{buildroot}%{_mandir}/man1/f2py.1
 
 #symlink for includes, BZ 185079
 mkdir -p %{buildroot}/usr/include
@@ -178,7 +169,7 @@ popd &> /dev/null
 
 
 %files
-%doc doc/cython LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
+%doc LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
 %dir %{python_sitearch}/%{name}
 %{python_sitearch}/%{name}/*.py*
 %{python_sitearch}/%{name}/core
@@ -188,8 +179,6 @@ popd &> /dev/null
 %{python_sitearch}/%{name}/lib
 %{python_sitearch}/%{name}/linalg
 %{python_sitearch}/%{name}/ma
-%{python_sitearch}/%{name}/numarray
-%{python_sitearch}/%{name}/oldnumeric
 %{python_sitearch}/%{name}/random
 %{python_sitearch}/%{name}/testing
 %{python_sitearch}/%{name}/tests
@@ -200,7 +189,7 @@ popd &> /dev/null
 %{_includedir}/numpy
 
 %files f2py
-%doc docs-f2py
+%doc doc/f2py/*.txt
 %{_mandir}/man*/*
 %{_bindir}/f2py
 %{_bindir}/f2py.numpy
@@ -208,7 +197,7 @@ popd &> /dev/null
 
 %if 0%{?with_python3}
 %files -n python3-numpy
-%doc doc/cython LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
+%doc LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
 %{python3_sitearch}/%{name}/__pycache__
 %dir %{python3_sitearch}/%{name}
 %{python3_sitearch}/%{name}/*.py*
@@ -219,8 +208,6 @@ popd &> /dev/null
 %{python3_sitearch}/%{name}/lib
 %{python3_sitearch}/%{name}/linalg
 %{python3_sitearch}/%{name}/ma
-%{python3_sitearch}/%{name}/numarray
-%{python3_sitearch}/%{name}/oldnumeric
 %{python3_sitearch}/%{name}/random
 %{python3_sitearch}/%{name}/testing
 %{python3_sitearch}/%{name}/tests
@@ -230,13 +217,15 @@ popd &> /dev/null
 %{python3_sitearch}/%{name}-*.egg-info
 
 %files -n python3-numpy-f2py
-%doc docs-f2py
 %{_bindir}/f2py3
 %{python3_sitearch}/%{name}/f2py
 %endif # with_python3
 
 
 %changelog
+* Wed Aug 27 2014 Orion Poplawski <orion@nwra.com> - 1:1.9.0-0.1.rc1
+- Update to 1.9.0rc1
+
 * Sun Aug 17 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:1.8.2-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
