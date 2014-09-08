@@ -223,8 +223,8 @@ popd &> /dev/null
 
 
 %changelog
-* Sun Sep 7 2014 Orion Poplawski <orion@nwra.com> - 1:1.9.1-1
-- Update to 1.9.1
+* Sun Sep 7 2014 Orion Poplawski <orion@nwra.com> - 1:1.9.0-1
+- Update to 1.9.0
 
 * Wed Aug 27 2014 Orion Poplawski <orion@nwra.com> - 1:1.9.0-0.1.rc1
 - Update to 1.9.0rc1
