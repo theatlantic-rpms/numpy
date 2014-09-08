@@ -5,11 +5,11 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-%global relc rc1
+%global relc %{nil}
 
 Name:           numpy
 Version:        1.9.0
-Release:        0.1.rc1%{?dist}
+Release:        1%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -223,6 +223,9 @@ popd &> /dev/null
 
 
 %changelog
+* Sun Sep 7 2014 Orion Poplawski <orion@nwra.com> - 1:1.9.1-1
+- Update to 1.9.1
+
 * Wed Aug 27 2014 Orion Poplawski <orion@nwra.com> - 1:1.9.0-0.1.rc1
 - Update to 1.9.0rc1
 
