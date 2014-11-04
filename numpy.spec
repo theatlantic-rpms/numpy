@@ -8,7 +8,7 @@
 %global relc %{nil}
 
 Name:           numpy
-Version:        1.9.0
+Version:        1.9.1
 Release:        1%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
@@ -223,6 +223,9 @@ popd &> /dev/null
 
 
 %changelog
+* Tue Nov 04 2014 Jon Ciesla <limburgher@gmail.com> - 1:1.9.1-1
+- Update to 1.9.1, BZ 1160273.
+
 * Sun Sep 7 2014 Orion Poplawski <orion@nwra.com> - 1:1.9.0-1
 - Update to 1.9.0
 
