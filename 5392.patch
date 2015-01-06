@@ -1,0 +1,127 @@
+From f0b2dd7d5151878f2b4b3ea20ff551b27243f27d Mon Sep 17 00:00:00 2001
+From: Charles Harris <charlesr.harris@gmail.com>
+Date: Wed, 24 Dec 2014 11:26:13 -0700
+Subject: [PATCH] BUG: Xerbla doesn't get linked in 1.9 on Fedora 21.
+
+Add our python_xerbla to the blasdot sources. That function is
+needed for all modules that link to the ATLAS 3.10 libraries, which
+in Fedora 21 are located in just two files: libsatlas and libtatlas.
+
+Also make the test for xerbla linkage work better. If xerbla is not
+linked the test will be skipped with a message.
+---
+ numpy/core/blasdot/python_xerbla.c | 51 ++++++++++++++++++++++++++++++++++++++
+ numpy/core/setup.py                |  3 ++-
+ numpy/linalg/tests/test_linalg.py  |  9 ++++---
+ 3 files changed, 59 insertions(+), 4 deletions(-)
+ create mode 100644 numpy/core/blasdot/python_xerbla.c
+
+diff --git a/numpy/core/blasdot/python_xerbla.c b/numpy/core/blasdot/python_xerbla.c
+new file mode 100644
+index 0000000..bdf0b90
+--- /dev/null
++++ b/numpy/core/blasdot/python_xerbla.c
+@@ -0,0 +1,51 @@
++#include "Python.h"
++
++/*
++ * From f2c.h, this should be safe unless fortran is set to use 64
++ * bit integers. We don't seem to have any good way to detect that.
++ */
++typedef int integer;
++
++/*
++  From the original manpage:
++  --------------------------
++  XERBLA is an error handler for the LAPACK routines.
++  It is called by an LAPACK routine if an input parameter has an invalid value.
++  A message is printed and execution stops.
++
++  Instead of printing a message and stopping the execution, a
++  ValueError is raised with the message.
++
++  Parameters:
++  -----------
++  srname: Subroutine name to use in error message, maximum six characters.
++          Spaces at the end are skipped.
++  info: Number of the invalid parameter.
++*/
++
++int xerbla_(char *srname, integer *info)
++{
++        static const char format[] = "On entry to %.*s" \
++                " parameter number %d had an illegal value";
++        char buf[sizeof(format) + 6 + 4];   /* 6 for name, 4 for param. num. */
++
++        int len = 0; /* length of subroutine name*/
++#ifdef WITH_THREAD
++        PyGILState_STATE save;
++#endif
++
++        while( len<6 && srname[len]!='\0' )
++                len++;
++        while( len && srname[len-1]==' ' )
++                len--;
++#ifdef WITH_THREAD
++        save = PyGILState_Ensure();
++#endif
++        PyOS_snprintf(buf, sizeof(buf), format, len, srname, *info);
++        PyErr_SetString(PyExc_ValueError, buf);
++#ifdef WITH_THREAD
++        PyGILState_Release(save);
++#endif
++
++        return 0;
++}
+diff --git a/numpy/core/setup.py b/numpy/core/setup.py
+index 1cd1ee1..baaee20 100644
+--- a/numpy/core/setup.py
++++ b/numpy/core/setup.py
+@@ -954,12 +954,13 @@ def get_dotblas_sources(ext, build_dir):
+         if blas_info:
+             if ('NO_ATLAS_INFO', 1) in blas_info.get('define_macros', []):
+                 return None # dotblas needs ATLAS, Fortran compiled blas will not be sufficient.
+-            return ext.depends[:2]
++            return ext.depends[:3]
+         return None # no extension module will be built
+ 
+     config.add_extension('_dotblas',
+                          sources = [get_dotblas_sources],
+                          depends = [join('blasdot', '_dotblas.c'),
++                                    join('blasdot', 'python_xerbla.c'),
+                                     join('blasdot', 'apple_sgemv_patch.c'),
+                                     join('blasdot', 'cblas.h'),
+                                   ],
+diff --git a/numpy/linalg/tests/test_linalg.py b/numpy/linalg/tests/test_linalg.py
+index 8edf36a..dec98db 100644
+--- a/numpy/linalg/tests/test_linalg.py
++++ b/numpy/linalg/tests/test_linalg.py
+@@ -1108,6 +1108,8 @@ def test_xerbla_override():
+     # and may, or may not, abort the process depending on the LAPACK package.
+     from nose import SkipTest
+ 
++    XERBLA_OK = 255
++
+     try:
+         pid = os.fork()
+     except (OSError, AttributeError):
+@@ -1137,15 +1139,16 @@ def test_xerbla_override():
+                 a, a, 0, 0)
+         except ValueError as e:
+             if "DORGQR parameter number 5" in str(e):
+-                # success
+-                os._exit(os.EX_OK)
++                # success, reuse error code to mark success as
++                # FORTRAN STOP returns as success.
++                os._exit(XERBLA_OK)
+ 
+         # Did not abort, but our xerbla was not linked in.
+         os._exit(os.EX_CONFIG)
+     else:
+         # parent
+         pid, status = os.wait()
+-        if os.WEXITSTATUS(status) != os.EX_OK or os.WIFSIGNALED(status):
++        if os.WEXITSTATUS(status) != XERBLA_OK:
+             raise SkipTest('Numpy xerbla not linked in.')
+ 
+ 
