@@ -8,8 +8,8 @@
 %global relc %{nil}
 
 Name:           numpy
-Version:        1.9.1
-Release:        2%{?dist}
+Version:        1.9.2
+Release:        1%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -18,9 +18,6 @@ Group:          Development/Languages
 License:        BSD and Python
 URL:            http://www.numpy.org/
 Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
-# Upstream patch to fix xerbla linkage
-# https://bugzilla.redhat.com/show_bug.cgi?id=1172834
-Patch0:         https://github.com/numpy/numpy/pull/5392.patch
 
 BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
 Requires:       python-nose
@@ -86,7 +83,6 @@ This package includes a version of f2py that works properly with NumPy.
 
 %prep
 %setup -q -n %{name}-%{version}%{?relc}
-%patch0 -p1 -b .xerbla
 
 # workaround for rhbz#849713
 # http://mail.scipy.org/pipermail/numpy-discussion/2012-July/063530.html
@@ -227,6 +223,9 @@ popd &> /dev/null
 
 
 %changelog
+* Sun Mar 1 2015 Orion Poplawski <orion@nwra.com> - 1:1.9.2-1
+- Update to 1.9.2
+
 * Tue Jan 6 2015 Orion Poplawski <orion@nwra.com> - 1:1.9.1-2
 - Add upstream patch to fix xerbla linkage (bug #1172834)
 
