@@ -1,7 +1,7 @@
-%if 0%{?fedora} > 12
+%if 0%{?fedora}
 %global with_python3 1
 %else
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
+%{!?python2_sitearch: %global python2_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 %endif
 
 #uncomment next line for a release candidate or a beta
@@ -9,7 +9,7 @@
 
 Name:           numpy
 Version:        1.9.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -20,13 +20,9 @@ URL:            http://www.numpy.org/
 Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
 
 BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
-Requires:       python-nose
-%if 0%{?with_python3}
-BuildRequires:  python3-devel
-BuildRequires:  python3-setuptools
-BuildRequires:  python3-nose
-%endif
 BuildRequires:  Cython
+Requires:       python-nose
+Provides:       python2-numpy = %{version}-%{release}
 
 %description
 NumPy is a general-purpose array-processing package designed to
@@ -57,6 +53,10 @@ Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
 License:        BSD
+BuildRequires:  python3-devel
+BuildRequires:  python3-setuptools
+BuildRequires:  python3-nose
+
 %description -n python3-numpy
 NumPy is a general-purpose array-processing package designed to
 efficiently manipulate large multi-dimensional arrays of arbitrary
@@ -143,12 +143,12 @@ install -D -p -m 0644 doc/f2py/f2py.1 %{buildroot}%{_mandir}/man1/f2py.1
 
 #symlink for includes, BZ 185079
 mkdir -p %{buildroot}/usr/include
-ln -s %{python_sitearch}/%{name}/core/include/numpy/ %{buildroot}/usr/include/numpy
+ln -s %{python2_sitearch}/%{name}/core/include/numpy/ %{buildroot}/usr/include/numpy
 
 
 %check
 pushd doc &> /dev/null
-PYTHONPATH="%{buildroot}%{python_sitearch}" %{__python} -c "import pkg_resources, numpy ; numpy.test()" \
+PYTHONPATH="%{buildroot}%{python2_sitearch}" %{__python} -c "import pkg_resources, numpy ; numpy.test()" \
 %ifarch s390 s390x
 || :
 %endif
@@ -169,23 +169,24 @@ popd &> /dev/null
 
 
 %files
-%doc LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
-%dir %{python_sitearch}/%{name}
-%{python_sitearch}/%{name}/*.py*
-%{python_sitearch}/%{name}/core
-%{python_sitearch}/%{name}/distutils
-%{python_sitearch}/%{name}/doc
-%{python_sitearch}/%{name}/fft
-%{python_sitearch}/%{name}/lib
-%{python_sitearch}/%{name}/linalg
-%{python_sitearch}/%{name}/ma
-%{python_sitearch}/%{name}/random
-%{python_sitearch}/%{name}/testing
-%{python_sitearch}/%{name}/tests
-%{python_sitearch}/%{name}/compat
-%{python_sitearch}/%{name}/matrixlib
-%{python_sitearch}/%{name}/polynomial
-%{python_sitearch}/%{name}-*.egg-info
+%license LICENSE.txt
+%doc README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
+%dir %{python2_sitearch}/%{name}
+%{python2_sitearch}/%{name}/*.py*
+%{python2_sitearch}/%{name}/core
+%{python2_sitearch}/%{name}/distutils
+%{python2_sitearch}/%{name}/doc
+%{python2_sitearch}/%{name}/fft
+%{python2_sitearch}/%{name}/lib
+%{python2_sitearch}/%{name}/linalg
+%{python2_sitearch}/%{name}/ma
+%{python2_sitearch}/%{name}/random
+%{python2_sitearch}/%{name}/testing
+%{python2_sitearch}/%{name}/tests
+%{python2_sitearch}/%{name}/compat
+%{python2_sitearch}/%{name}/matrixlib
+%{python2_sitearch}/%{name}/polynomial
+%{python2_sitearch}/%{name}-*.egg-info
 %{_includedir}/numpy
 
 %files f2py
@@ -193,11 +194,12 @@ popd &> /dev/null
 %{_mandir}/man*/*
 %{_bindir}/f2py
 %{_bindir}/f2py.numpy
-%{python_sitearch}/%{name}/f2py
+%{python2_sitearch}/%{name}/f2py
 
 %if 0%{?with_python3}
 %files -n python3-numpy
-%doc LICENSE.txt README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
+%license LICENSE.txt
+%doc README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
 %{python3_sitearch}/%{name}/__pycache__
 %dir %{python3_sitearch}/%{name}
 %{python3_sitearch}/%{name}/*.py*
@@ -223,6 +225,10 @@ popd &> /dev/null
 
 
 %changelog
+* Thu Aug 13 2015 Orion Poplawski <orion@nwra.com> - 1:1.9.2-3
+- Add python2-numpy provides (bug #1249423)
+- Spec cleanup
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:1.9.2-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
