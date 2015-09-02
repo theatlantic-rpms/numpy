@@ -5,11 +5,12 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-%global relc %{nil}
+#%%global relc %%{nil}
+%global relc b1
 
 Name:           numpy
-Version:        1.9.2
-Release:        3%{?dist}
+Version:        1.10.0
+Release:        0.%{?relc}%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -225,6 +226,9 @@ popd &> /dev/null
 
 
 %changelog
+* Wed Sep 02 2015 Jon Ciesla <limburgher@gmail.com> - 1:1.10.0-0.b1
+- Update to 1.10.0b1, BZ 1252641.
+
 * Thu Aug 13 2015 Orion Poplawski <orion@nwra.com> - 1:1.9.2-3
 - Add python2-numpy provides (bug #1249423)
 - Spec cleanup
