@@ -9,8 +9,8 @@
 #%%global relc b1
 
 Name:           numpy
-Version:        1.10.0
-Release:        2%{?relc}%{?dist}
+Version:        1.10.1
+Release:        1%{?relc}%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -226,6 +226,9 @@ popd &> /dev/null
 
 
 %changelog
+* Tue Oct 13 2015 Jon Ciesla <limburgher@gmail.com> - 1:1.10.1-1
+- Update to 1.10.1, BZ 1271022.
+
 * Tue Oct 13 2015 Robert Kuska <rkuska@redhat.com> - 1:1.10.0-2
 - Rebuilt for Python3.5 rebuild
 
