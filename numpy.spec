@@ -8,9 +8,11 @@
 #%%global relc %%{nil}
 #%%global relc b1
 
+%global modname numpy
+
 Name:           numpy
 Version:        1.10.1
-Release:        1%{?relc}%{?dist}
+Release:        2%{?relc}%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -22,8 +24,6 @@ Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc
 
 BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
 BuildRequires:  Cython
-Requires:       python-nose
-Provides:       python2-numpy = %{version}-%{release}
 
 %description
 NumPy is a general-purpose array-processing package designed to
@@ -37,15 +37,38 @@ There are also basic facilities for discrete fourier transform,
 basic linear algebra and random number generation. Also included in
 this package is a version of f2py that works properly with NumPy.
 
-%package f2py
+
+%package -n python2-numpy
+Summary:        A fast multidimensional array facility for Python
+Requires:       python-nose
+%{?python_provide:%python_provide python2-%{modname}}
+# General provides of plain 'numpy' that is in use by 1 package as of F24
+Provides:       numpy = %{epoch}:%{version}-%{release}
+Obsoletes:      numpy <= 2.45.241_1927
+%description -n python2-numpy
+NumPy is a general-purpose array-processing package designed to
+efficiently manipulate large multi-dimensional arrays of arbitrary
+records without sacrificing too much speed for small multi-dimensional
+arrays.  NumPy is built on the Numeric code base and adds features
+introduced by numarray as well as an extended C-API and the ability to
+create arrays of arbitrary type.
+
+There are also basic facilities for discrete fourier transform,
+basic linear algebra and random number generation. Also included in
+this package is a version of f2py that works properly with NumPy.
+
+
+%package -n python2-numpy-f2py
 Summary:        f2py for numpy
 Group:          Development/Libraries
 Requires:       %{name} = %{epoch}:%{version}-%{release}
 Requires:       python-devel
 Provides:       f2py = %{version}-%{release}
 Obsoletes:      f2py <= 2.45.241_1927
+%{?python_provide:%python_provide python2-numpy-f2py}
 
-%description f2py
+
+%description -n python2-numpy-f2py
 This package includes a version of f2py that works properly with NumPy.
 
 %if 0%{?with_python3}
@@ -54,6 +77,7 @@ Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
 License:        BSD
+%{?python_provide:%python_provide python3-numpy}
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
 BuildRequires:  python3-nose
@@ -77,6 +101,7 @@ Requires:       python3-numpy = %{epoch}:%{version}-%{release}
 Requires:       python3-devel
 Provides:       python3-f2py = %{version}-%{release}
 Obsoletes:      python3-f2py <= 2.45.241_1927
+%{?python_provide:%python_provide python3-numpy-f2py}
 
 %description -n python3-numpy-f2py
 This package includes a version of f2py that works properly with NumPy.
@@ -135,7 +160,7 @@ popd
 # skip-build currently broken, this works around it for now
 env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
-    %{__python} setup.py install --root %{buildroot}
+    %{__python2} setup.py install --root %{buildroot}
 pushd %{buildroot}%{_bindir} &> /dev/null
 # symlink for anyone who was using f2py.numpy
 ln -s f2py f2py.numpy
@@ -149,7 +174,7 @@ ln -s %{python2_sitearch}/%{name}/core/include/numpy/ %{buildroot}/usr/include/n
 
 %check
 pushd doc &> /dev/null
-PYTHONPATH="%{buildroot}%{python2_sitearch}" %{__python} -c "import pkg_resources, numpy ; numpy.test()" \
+PYTHONPATH="%{buildroot}%{python2_sitearch}" %{__python2} -c "import pkg_resources, numpy ; numpy.test(verbose=2)" \
 %ifarch s390 s390x
 || :
 %endif
@@ -158,8 +183,7 @@ popd &> /dev/null
 
 %if 0%{?with_python3}
 pushd doc &> /dev/null
-# there is no python3-nose yet
-PYTHONPATH="%{buildroot}%{python3_sitearch}" %{__python3} -c "import pkg_resources, numpy ; numpy.test()" \
+PYTHONPATH="%{buildroot}%{python3_sitearch}" %{__python3} -c "import pkg_resources, numpy ; numpy.test(verbose=2)" \
 %ifarch s390 s390x
 || :
 %endif
@@ -169,7 +193,7 @@ popd &> /dev/null
 %endif # with_python3
 
 
-%files
+%files -n python2-numpy
 %license LICENSE.txt
 %doc README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
 %dir %{python2_sitearch}/%{name}
@@ -190,10 +214,11 @@ popd &> /dev/null
 %{python2_sitearch}/%{name}-*.egg-info
 %{_includedir}/numpy
 
-%files f2py
+%files -n python2-numpy-f2py
 %doc doc/f2py/*.txt
 %{_mandir}/man*/*
 %{_bindir}/f2py
+%{_bindir}/f2py2
 %{_bindir}/f2py.numpy
 %{python2_sitearch}/%{name}/f2py
 
@@ -226,6 +251,10 @@ popd &> /dev/null
 
 
 %changelog
+* Wed Oct 14 2015 Thomas Spura <tomspur@fedoraproject.org> - 1:1.10.1-2
+- Provide python2-* packages
+- Run tests with verbose=2
+
 * Tue Oct 13 2015 Jon Ciesla <limburgher@gmail.com> - 1:1.10.1-1
 - Update to 1.10.1, BZ 1271022.
 
