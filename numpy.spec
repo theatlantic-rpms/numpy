@@ -12,7 +12,7 @@
 
 Name:           numpy
 Version:        1.10.1
-Release:        2%{?relc}%{?dist}
+Release:        3%{?relc}%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -21,6 +21,7 @@ Group:          Development/Languages
 License:        BSD and Python
 URL:            http://www.numpy.org/
 Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
+Patch0:         numpy-1.10.1-remove-opt-flags.patch
 
 BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
 BuildRequires:  Cython
@@ -109,6 +110,7 @@ This package includes a version of f2py that works properly with NumPy.
 
 %prep
 %setup -q -n %{name}-%{version}%{?relc}
+%patch0 -R -p1
 
 # workaround for rhbz#849713
 # http://mail.scipy.org/pipermail/numpy-discussion/2012-July/063530.html
@@ -251,6 +253,9 @@ popd &> /dev/null
 
 
 %changelog
+* Wed Oct 14 2015 Thomas Spura <tomspur@fedoraproject.org> - 1:1.10.1-3
+- Remove fortran flags or arm would build with -march=x86-64
+
 * Wed Oct 14 2015 Thomas Spura <tomspur@fedoraproject.org> - 1:1.10.1-2
 - Provide python2-* packages
 - Run tests with verbose=2

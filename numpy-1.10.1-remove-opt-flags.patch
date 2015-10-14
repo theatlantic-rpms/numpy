@@ -1,0 +1,11 @@
+--- numpy-1.10.1/numpy/distutils/fcompiler/gnu.py	2015-10-14 21:43:39.834732663 +0200
++++ numpy-1.10.1/numpy/distutils/fcompiler/gnu.py.orig	2015-10-14 21:42:31.346540506 +0200
+@@ -218,7 +218,7 @@
+                 opt = ['-O2 -march=core2 -mtune=generic -mfpmath=sse -msse2 '
+                        '-mincoming-stack-boundary=2']
+             else:
+-                opt = ['-O2']
++                opt = ['-O2 -march=x86-64 -DMS_WIN64 -mtune=generic -msse2']
+         else:
+             opt = ['-O2']
+ 
