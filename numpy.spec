@@ -12,7 +12,7 @@
 
 Name:           numpy
 Version:        1.10.1
-Release:        3%{?relc}%{?dist}
+Release:        4%{?relc}%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -45,7 +45,7 @@ Requires:       python-nose
 %{?python_provide:%python_provide python2-%{modname}}
 # General provides of plain 'numpy' that is in use by 1 package as of F24
 Provides:       numpy = %{epoch}:%{version}-%{release}
-Obsoletes:      numpy <= 2.45.241_1927
+Obsoletes:      numpy < 1:1.10.1-3
 %description -n python2-numpy
 NumPy is a general-purpose array-processing package designed to
 efficiently manipulate large multi-dimensional arrays of arbitrary
@@ -64,8 +64,8 @@ Summary:        f2py for numpy
 Group:          Development/Libraries
 Requires:       %{name} = %{epoch}:%{version}-%{release}
 Requires:       python-devel
-Provides:       f2py = %{version}-%{release}
-Obsoletes:      f2py <= 2.45.241_1927
+Provides:       numpy-f2py = %{epoch}:%{version}-%{release}
+Obsoletes:      numpy-f2py < 1:1.10.1-3
 %{?python_provide:%python_provide python2-numpy-f2py}
 
 
@@ -253,6 +253,9 @@ popd &> /dev/null
 
 
 %changelog
+* Thu Nov 12 2015 Kalev Lember <klember@redhat.com> - 1:1.10.1-4
+- Fix obsoletes / provides for numpy -> python2-numpy rename
+
 * Wed Oct 14 2015 Thomas Spura <tomspur@fedoraproject.org> - 1:1.10.1-3
 - Remove fortran flags or arm would build with -march=x86-64
 
