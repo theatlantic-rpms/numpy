@@ -12,7 +12,7 @@
 
 Name:           numpy
 Version:        1.10.1
-Release:        4%{?relc}%{?dist}
+Release:        5%{?relc}%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -64,6 +64,7 @@ Summary:        f2py for numpy
 Group:          Development/Libraries
 Requires:       %{name} = %{epoch}:%{version}-%{release}
 Requires:       python-devel
+Provides:       f2py = %{epoch}:%{version}-%{release}
 Provides:       numpy-f2py = %{epoch}:%{version}-%{release}
 Obsoletes:      numpy-f2py < 1:1.10.1-3
 %{?python_provide:%python_provide python2-numpy-f2py}
@@ -253,6 +254,9 @@ popd &> /dev/null
 
 
 %changelog
+* Thu Nov 12 2015 Orion Poplawski <orion@nwra.com> - 1:1.10.1-5
+- Re-add provides f2py
+
 * Thu Nov 12 2015 Kalev Lember <klember@redhat.com> - 1:1.10.1-4
 - Fix obsoletes / provides for numpy -> python2-numpy rename
 
