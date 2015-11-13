@@ -5,14 +5,13 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-#%%global relc %%{nil}
-#%%global relc b1
+%global relc rc1
 
 %global modname numpy
 
 Name:           numpy
-Version:        1.10.1
-Release:        6%{?relc}%{?dist}
+Version:        1.10.2
+Release:        0.1%{?relc}%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -21,7 +20,6 @@ Group:          Development/Languages
 License:        BSD and Python
 URL:            http://www.numpy.org/
 Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
-Patch0:         numpy-1.10.1-remove-opt-flags.patch
 
 BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
 BuildRequires:  Cython
@@ -112,7 +110,6 @@ This package includes a version of f2py that works properly with NumPy.
 
 %prep
 %setup -q -n %{name}-%{version}%{?relc}
-%patch0 -R -p1
 
 # workaround for rhbz#849713
 # http://mail.scipy.org/pipermail/numpy-discussion/2012-July/063530.html
@@ -255,6 +252,10 @@ popd &> /dev/null
 
 
 %changelog
+* Fri Nov 13 2015 Orion Poplawski <orion@cora.nwra.com> - 1:1.10.2-0.1.rc1
+- Update to 1.10.2rc1
+- Drop opt-flags patch applied upstream
+
 * Fri Nov 13 2015 Kalev Lember <klember@redhat.com> - 1:1.10.1-6
 - Add provides to satisfy numpy%%{_isa} requires in other packages
 
