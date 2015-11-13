@@ -12,7 +12,7 @@
 
 Name:           numpy
 Version:        1.10.1
-Release:        5%{?relc}%{?dist}
+Release:        6%{?relc}%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -45,6 +45,7 @@ Requires:       python-nose
 %{?python_provide:%python_provide python2-%{modname}}
 # General provides of plain 'numpy' that is in use by 1 package as of F24
 Provides:       numpy = %{epoch}:%{version}-%{release}
+Provides:       numpy%{?_isa} = %{epoch}:%{version}-%{release}
 Obsoletes:      numpy < 1:1.10.1-3
 %description -n python2-numpy
 NumPy is a general-purpose array-processing package designed to
@@ -254,6 +255,9 @@ popd &> /dev/null
 
 
 %changelog
+* Fri Nov 13 2015 Kalev Lember <klember@redhat.com> - 1:1.10.1-6
+- Add provides to satisfy numpy%%{_isa} requires in other packages
+
 * Thu Nov 12 2015 Orion Poplawski <orion@nwra.com> - 1:1.10.1-5
 - Re-add provides f2py
 
