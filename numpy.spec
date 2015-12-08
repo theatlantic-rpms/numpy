@@ -5,13 +5,13 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-%global relc rc1
+%global relc rc2
 
 %global modname numpy
 
 Name:           numpy
 Version:        1.10.2
-Release:        0.1%{?relc}%{?dist}
+Release:        0.2%{?relc}%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -252,6 +252,9 @@ popd &> /dev/null
 
 
 %changelog
+* Tue Dec 08 2015 Jon Ciesla <limburgher@gmail.com> - 1:1.10.2-0.2.rc2
+- Update to 1.10.2rc1, BZ 1289550.
+
 * Fri Nov 13 2015 Orion Poplawski <orion@cora.nwra.com> - 1:1.10.2-0.1.rc1
 - Update to 1.10.2rc1
 - Drop opt-flags patch applied upstream
