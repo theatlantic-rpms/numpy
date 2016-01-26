@@ -5,13 +5,13 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-#%%global relc rc2
+%global relc 20160126.cc2b04git
 
 %global modname numpy
 
 Name:           numpy
-Version:        1.10.4
-Release:        1%{?relc}%{?dist}
+Version:        1.11.0
+Release:        0%{?relc}%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -19,7 +19,8 @@ Group:          Development/Languages
 # Everything is BSD except for class SafeEval in numpy/lib/utils.py which is Python
 License:        BSD and Python
 URL:            http://www.numpy.org/
-Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
+#Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
+Source0:        numpy-cc2b04.tar.gz
 
 BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
 BuildRequires:  Cython
@@ -109,7 +110,8 @@ This package includes a version of f2py that works properly with NumPy.
 %endif # with_python3
 
 %prep
-%setup -q -n %{name}-%{version}%{?relc}
+#%setup -q -n %{name}-%{version}%{?relc}
+%setup -q -n numpy-cc2b04
 
 # workaround for rhbz#849713
 # http://mail.scipy.org/pipermail/numpy-discussion/2012-July/063530.html
@@ -196,7 +198,7 @@ popd &> /dev/null
 
 %files -n python2-numpy
 %license LICENSE.txt
-%doc README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
+%doc README.md THANKS.txt CONTRIBUTING.md site.cfg.example
 %dir %{python2_sitearch}/%{name}
 %{python2_sitearch}/%{name}/*.py*
 %{python2_sitearch}/%{name}/core
@@ -226,7 +228,7 @@ popd &> /dev/null
 %if 0%{?with_python3}
 %files -n python3-numpy
 %license LICENSE.txt
-%doc README.txt THANKS.txt DEV_README.txt COMPATIBILITY site.cfg.example
+%doc README.md THANKS.txt CONTRIBUTING.md site.cfg.example
 %{python3_sitearch}/%{name}/__pycache__
 %dir %{python3_sitearch}/%{name}
 %{python3_sitearch}/%{name}/*.py*
@@ -252,6 +254,9 @@ popd &> /dev/null
 
 
 %changelog
+* Tue Jan 26 2016 Jon Ciesla <limburgher@gmail.com> - 1:1.11.0-020161016.cc2b04git
+- Update to git snapshot (due to build issue) after 1.11.0b1, BZ 1301943.
+
 * Thu Jan 07 2016 Jon Ciesla <limburgher@gmail.com> - 1:1.10.4-1
 - Update to 1.10.4, BZ 1296509.
 
