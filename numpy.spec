@@ -5,7 +5,7 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-%global relc 20160126.cc2b04git
+%global relc b2
 
 %global modname numpy
 
@@ -19,8 +19,8 @@ Group:          Development/Languages
 # Everything is BSD except for class SafeEval in numpy/lib/utils.py which is Python
 License:        BSD and Python
 URL:            http://www.numpy.org/
-#Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
-Source0:        numpy-cc2b04.tar.gz
+Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
+#Source0:        numpy-cc2b04.tar.gz
 
 BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
 BuildRequires:  Cython
@@ -110,8 +110,8 @@ This package includes a version of f2py that works properly with NumPy.
 %endif # with_python3
 
 %prep
-#%setup -q -n %{name}-%{version}%{?relc}
-%setup -q -n numpy-cc2b04
+%setup -q -n %{name}-%{version}%{?relc}
+#%setup -q -n numpy-cc2b04
 
 # workaround for rhbz#849713
 # http://mail.scipy.org/pipermail/numpy-discussion/2012-July/063530.html
@@ -198,7 +198,7 @@ popd &> /dev/null
 
 %files -n python2-numpy
 %license LICENSE.txt
-%doc README.md THANKS.txt CONTRIBUTING.md site.cfg.example
+%doc THANKS.txt site.cfg.example
 %dir %{python2_sitearch}/%{name}
 %{python2_sitearch}/%{name}/*.py*
 %{python2_sitearch}/%{name}/core
@@ -228,7 +228,7 @@ popd &> /dev/null
 %if 0%{?with_python3}
 %files -n python3-numpy
 %license LICENSE.txt
-%doc README.md THANKS.txt CONTRIBUTING.md site.cfg.example
+%doc THANKS.txt site.cfg.example
 %{python3_sitearch}/%{name}/__pycache__
 %dir %{python3_sitearch}/%{name}
 %{python3_sitearch}/%{name}/*.py*
@@ -254,6 +254,9 @@ popd &> /dev/null
 
 
 %changelog
+* Sun Jan 31 2016 Jon Ciesla <limburgher@gmail.com> - 1:1.11.0-0.b2
+- Update to 1.11.0b2, BZ 1303387.
+
 * Tue Jan 26 2016 Jon Ciesla <limburgher@gmail.com> - 1:1.11.0-020161016.cc2b04git
 - Update to git snapshot (due to build issue) after 1.11.0b1, BZ 1301943.
 
