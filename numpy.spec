@@ -5,13 +5,13 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-%global relc b2
+%global relc b3
 
 %global modname numpy
 
 Name:           numpy
 Version:        1.11.0
-Release:        1%{?relc}%{?dist}
+Release:        0%{?relc}%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -254,6 +254,9 @@ popd &> /dev/null
 
 
 %changelog
+* Wed Feb 10 2016 Jon Ciesla <limburgher@gmail.com> - 1:1.11.0-0.b3
+- Update to 1.11.0b2, BZ 1306249.
+
 * Thu Feb 04 2016 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.11.0-1b2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
