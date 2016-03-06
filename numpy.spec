@@ -11,7 +11,7 @@
 
 Name:           numpy
 Version:        1.11.0
-Release:        0%{?relc}%{?dist}
+Release:        2.%{?relc}%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -254,6 +254,9 @@ popd &> /dev/null
 
 
 %changelog
+* Sun Mar  6 2016 Peter Robinson <pbrobinson@fedoraproject.org> 1:1.11.0-2.b3
+- Bump Release. 1b2 is higher than 0b3
+
 * Wed Feb 10 2016 Jon Ciesla <limburgher@gmail.com> - 1:1.11.0-0.b3
 - Update to 1.11.0b2, BZ 1306249.
 
