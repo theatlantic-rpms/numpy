@@ -5,13 +5,13 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-%global relc b3
+%global relc rc2
 
 %global modname numpy
 
 Name:           numpy
 Version:        1.11.0
-Release:        2.%{?relc}%{?dist}
+Release:        3.%{?relc}%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -254,6 +254,9 @@ popd &> /dev/null
 
 
 %changelog
+* Wed Mar 23 2016 Orion Poplawski <orion@cora.nwra.com> - 1:1.11.0-3.rc2
+- Update to 1.11.0rc2
+
 * Sun Mar  6 2016 Peter Robinson <pbrobinson@fedoraproject.org> 1:1.11.0-2.b3
 - Bump Release. 1b2 is higher than 0b3
 
