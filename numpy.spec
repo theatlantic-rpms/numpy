@@ -5,13 +5,14 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-%global relc %{nil}
+#%%global relc %%{nil}
+%global relc rc1
 
 %global modname numpy
 
 Name:           numpy
-Version:        1.11.0
-Release:        4%{?dist}
+Version:        1.11.1
+Release:        0.%{?relc}%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -254,6 +255,9 @@ popd &> /dev/null
 
 
 %changelog
+* Tue Jun 07 2016 Jon Ciesla <limburgher@gmail.com> - 1:1.11.1-0.rc1
+- Update to 1.11.1rc1, BZ 1340440.
+
 * Mon Mar 28 2016 Orion Poplawski <orion@cora.nwra.com> - 1:1.11.0-4
 - Update to 1.11.0 final
 
