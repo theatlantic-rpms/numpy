@@ -5,13 +5,13 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-#%%global relc %%{nil}
+%global relc rc1
 
 %global modname numpy
 
 Name:           numpy
-Version:        1.11.1
-Release:        2%{?relc:.%relc}%{?dist}
+Version:        1.11.2
+Release:        0%{?relc:.%relc}%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -254,6 +254,9 @@ popd &> /dev/null
 
 
 %changelog
+* Thu Sep 15 2016 Jon Ciesla <limburgher@gmail.com> - 1:1.11.2-0.rc1
+- Update to 1.11.2rc1, BZ 1340440.
+
 * Tue Jul 19 2016 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:1.11.1-2
 - https://fedoraproject.org/wiki/Changes/Automatic_Provides_for_Python_RPM_Packages
 
