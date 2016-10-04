@@ -5,13 +5,13 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-%global relc rc1
+#global relc rc1
 
 %global modname numpy
 
 Name:           numpy
 Version:        1.11.2
-Release:        0%{?relc:.%relc}%{?dist}
+Release:        1%{?relc:.%relc}%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -20,7 +20,6 @@ Group:          Development/Languages
 License:        BSD and Python
 URL:            http://www.numpy.org/
 Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
-#Source0:        numpy-cc2b04.tar.gz
 
 BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
 BuildRequires:  Cython
@@ -254,6 +253,9 @@ popd &> /dev/null
 
 
 %changelog
+* Mon Oct 3 2016 Orion Poplawski <orion@cora.nwra.com> - 1:1.11.2-1
+- Update to 1.11.2 final
+
 * Thu Sep 15 2016 Jon Ciesla <limburgher@gmail.com> - 1:1.11.2-0.rc1
 - Update to 1.11.2rc1, BZ 1340440.
 
