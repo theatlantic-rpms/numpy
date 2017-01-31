@@ -10,8 +10,8 @@
 %global modname numpy
 
 Name:           numpy
-Version:        1.11.2
-Release:        2%{?relc:.%relc}%{?dist}
+Version:        1.12.0
+Release:        1%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -19,7 +19,7 @@ Group:          Development/Languages
 # Everything is BSD except for class SafeEval in numpy/lib/utils.py which is Python
 License:        BSD and Python
 URL:            http://www.numpy.org/
-Source0:        http://downloads.sourceforge.net/numpy/%{name}-%{version}%{?relc}.tar.gz
+Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
 
 BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
 BuildRequires:  Cython
@@ -253,6 +253,9 @@ popd &> /dev/null
 
 
 %changelog
+* Tue Jan 31 2017 Simone Caronni <negativo17@gmail.com> - 1:1.12.0-1
+- Update to 1.12.0, build with gcc 7.0.
+
 * Mon Dec 12 2016 Charalampos Stratakis <cstratak@redhat.com> - 1:1.11.2-2
 - Rebuild for Python 3.6
 
