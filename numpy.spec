@@ -5,13 +5,13 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-#global relc rc1
+%global relc rc1
 
 %global modname numpy
 
 Name:           numpy
-Version:        1.12.1
-Release:        1%{?dist}
+Version:        1.13.0
+Release:        0.%{relc}%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -19,7 +19,7 @@ Group:          Development/Languages
 # Everything is BSD except for class SafeEval in numpy/lib/utils.py which is Python
 License:        BSD and Python
 URL:            http://www.numpy.org/
-Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
+Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}%{relc}.tar.gz
 
 BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
 BuildRequires:  Cython
@@ -253,6 +253,9 @@ popd &> /dev/null
 
 
 %changelog
+* Thu May 11 2017 Gwyn Ciesla <limburgher@gmail.com> - 1:1.13.0-0.rc1
+- 1.13.0 rc1
+
 * Wed Mar 29 2017 Gwyn Ciesla <limburgher@gmail.com> - 1:1.12.1-1
 - 1.12.1
 
