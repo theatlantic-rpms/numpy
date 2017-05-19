@@ -5,7 +5,7 @@
 %endif
 
 #uncomment next line for a release candidate or a beta
-%global relc rc1
+%global relc rc2
 
 %global modname numpy
 
@@ -253,6 +253,9 @@ popd &> /dev/null
 
 
 %changelog
+* Fri May 19 2017 Gwyn Ciesla <limburgher@gmail.com> - 1:1.13.0-0.rc2
+- 1.13.0 rc2
+
 * Thu May 11 2017 Gwyn Ciesla <limburgher@gmail.com> - 1:1.13.0-0.rc1
 - 1.13.0 rc1
 
