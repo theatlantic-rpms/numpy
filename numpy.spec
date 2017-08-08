@@ -1,17 +1,26 @@
-%if 0%{?fedora}
-%global with_python3 1
-%else
-%{!?python2_sitearch: %global python2_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
+%global with_python3 0
+%global with_python36 1
+%global build_wheel 1
+
+%global modname numpy
+
+%if 0%{?build_wheel}
+%{!?python2_wheelsuffix: %define python2_wheelsuffix %(%{__python} -c 'from wheel.pep425tags import get_abbr_impl, get_impl_ver, get_abi_tag; from distutils.util import get_platform; print("-".join([get_abbr_impl() + get_impl_ver(), get_abi_tag(), get_platform().replace("-", "_").replace(".", "_")]))')}
+%global python2_wheelname %{modname}-%{version}-%{python2_wheelsuffix}.whl
+%global python2_record %{python2_sitearch}/%{modname}-%{version}.dist-info/RECORD
+%if 0%{?with_python36}
+%{!?python36_wheelsuffix: %define python36_wheelsuffix %(%{__python36} -c 'from wheel.pep425tags import get_abbr_impl, get_impl_ver, get_abi_tag; from distutils.util import get_platform; print("-".join([get_abbr_impl() + get_impl_ver(), get_abi_tag(), get_platform().replace("-", "_").replace(".", "_")]))')}
+%global python36_wheelname %{modname}-%{version}-%{python36_wheelsuffix}.whl
+%global python36_record %{python36_sitearch}/%{modname}-%{version}.dist-info/RECORD
+%endif
 %endif
 
 #uncomment next line for a release candidate or a beta
 #%%global relc rc2
 
-%global modname numpy
-
 Name:           numpy
 Version:        1.13.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Epoch:          1
 Summary:        A fast multidimensional array facility for Python
 
@@ -21,7 +30,7 @@ License:        BSD and Python
 URL:            http://www.numpy.org/
 Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
 
-BuildRequires:  python2-devel lapack-devel python-setuptools gcc-gfortran atlas-devel python-nose
+BuildRequires:  python2-devel python-setuptools gcc-gfortran openblas-devel python-nose python-pip python-wheel
 BuildRequires:  Cython
 
 %description
@@ -72,18 +81,18 @@ Obsoletes:      numpy-f2py < 1:1.10.1-3
 %description -n python2-numpy-f2py
 This package includes a version of f2py that works properly with NumPy.
 
-%if 0%{?with_python3}
-%package -n python3-numpy
+%if 0%{?with_python36}
+%package -n python36u-numpy
 Summary:        A fast multidimensional array facility for Python
 
 Group:          Development/Languages
 License:        BSD
-%{?python_provide:%python_provide python3-numpy}
-BuildRequires:  python3-devel
-BuildRequires:  python3-setuptools
-BuildRequires:  python3-nose
+BuildRequires:  python36u-devel
+BuildRequires:  python36u-setuptools
+BuildRequires:  python36u-pip
+BuildRequires:  python36u-wheel
 
-%description -n python3-numpy
+%description -n python36u-numpy
 NumPy is a general-purpose array-processing package designed to
 efficiently manipulate large multi-dimensional arrays of arbitrary
 records without sacrificing too much speed for small multi-dimensional
@@ -95,18 +104,18 @@ There are also basic facilities for discrete fourier transform,
 basic linear algebra and random number generation. Also included in
 this package is a version of f2py that works properly with NumPy.
 
-%package -n python3-numpy-f2py
+%package -n python36u-numpy-f2py
 Summary:        f2py for numpy
 Group:          Development/Libraries
-Requires:       python3-numpy = %{epoch}:%{version}-%{release}
-Requires:       python3-devel
-Provides:       python3-f2py = %{version}-%{release}
-Obsoletes:      python3-f2py <= 2.45.241_1927
-%{?python_provide:%python_provide python3-numpy-f2py}
+Requires:       python36u-numpy = %{epoch}:%{version}-%{release}
+Requires:       python36u-devel
+Provides:       python36u-f2py = %{version}-%{release}
+Obsoletes:      python36u-f2py <= 2.45.241_1927
+# %{?python_provide:%python_provide python3-numpy-f2py}
 
-%description -n python3-numpy-f2py
+%description -n python36u-numpy-f2py
 This package includes a version of f2py that works properly with NumPy.
-%endif # with_python3
+%endif # with_python36
 
 %prep
 %setup -q -n %{name}-%{version}%{?relc}
@@ -116,53 +125,45 @@ This package includes a version of f2py that works properly with NumPy.
 # http://mail.scipy.org/pipermail/numpy-discussion/2012-July/063530.html
 rm numpy/distutils/command/__init__.py && touch numpy/distutils/command/__init__.py
 
-# Atlas 3.10 library names
-%if 0%{?fedora} >= 21
-cat >> site.cfg <<EOF
-[atlas]
-library_dirs = %{_libdir}/atlas
-atlas_libs = satlas
-EOF
-%endif
-
-%if 0%{?with_python3}
-rm -rf %{py3dir}
-cp -a . %{py3dir}
+%if 0%{?with_python36}
+rm -rf %{py36dir}
+cp -a . %{py36dir}
 %endif
 
 %build
-%if 0%{?with_python3}
-pushd %{py3dir}
+%if 0%{?with_python36}
+pushd %{py36dir}
 env ATLAS=%{_libdir} BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
-    %{__python3} setup.py build
+    %{__python36} setup.py bdist_wheel
 popd
-%endif # with _python3
+%endif # with _python36
 
 env ATLAS=%{_libdir} BLAS=%{_libdir} \
     LAPACK=%{_libdir} CFLAGS="%{optflags}" \
-    %{__python} setup.py build
+    %{__python} setup.py bdist_wheel
 
 %install
+export ATLAS=%{_libdir}
+export FFTW=%{_libdir}
+export BLAS=%{_libdir}
+export LAPACK=%{_libdir}
+export CFLAGS="%{optflags}"
 # first install python3 so the binaries are overwritten by the python2 ones
-%if 0%{?with_python3}
-pushd %{py3dir}
+%if 0%{?with_python36}
+pushd %{py36dir}
 #%%{__python} setup.py install -O1 --skip-build --root %%{buildroot}
 # skip-build currently broken, this works around it for now
-env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
-    LAPACK=%{_libdir} CFLAGS="%{optflags}" \
-    %{__python3} setup.py install --root %{buildroot}
+%py36_install_wheel %{python36_wheelname}
 pushd %{buildroot}%{_bindir} &> /dev/null
 popd &> /dev/null
 
 popd
-%endif # with_python3
+%endif # with_python36
 
 #%%{__python} setup.py install -O1 --skip-build --root %%{buildroot}
 # skip-build currently broken, this works around it for now
-env ATLAS=%{_libdir} FFTW=%{_libdir} BLAS=%{_libdir} \
-    LAPACK=%{_libdir} CFLAGS="%{optflags}" \
-    %{__python2} setup.py install --root %{buildroot}
+%py2_install_wheel %{python2_wheelname}
 pushd %{buildroot}%{_bindir} &> /dev/null
 # symlink for anyone who was using f2py.numpy
 ln -s f2py f2py.numpy
@@ -183,76 +184,52 @@ PYTHONPATH="%{buildroot}%{python2_sitearch}" %{__python2} -c "import pkg_resourc
 # don't remove this comment
 popd &> /dev/null
 
-%if 0%{?with_python3}
+%if 0%{?with_python36}
 pushd doc &> /dev/null
-PYTHONPATH="%{buildroot}%{python3_sitearch}" %{__python3} -c "import pkg_resources, numpy ; numpy.test(verbose=2)" \
+PYTHONPATH="%{buildroot}%{python36_sitearch}" %{__python36} -c "import pkg_resources, numpy ; numpy.test(verbose=2)" \
 %ifarch s390 s390x
 || :
 %endif
 # don't remove this comment
 popd &> /dev/null
 
-%endif # with_python3
+%endif # with_python36
 
 
 %files -n python2-numpy
 %license LICENSE.txt
 %doc THANKS.txt site.cfg.example
 %dir %{python2_sitearch}/%{name}
-%{python2_sitearch}/%{name}/*.py*
-%{python2_sitearch}/%{name}/core
-%{python2_sitearch}/%{name}/distutils
-%{python2_sitearch}/%{name}/doc
-%{python2_sitearch}/%{name}/fft
-%{python2_sitearch}/%{name}/lib
-%{python2_sitearch}/%{name}/linalg
-%{python2_sitearch}/%{name}/ma
-%{python2_sitearch}/%{name}/random
-%{python2_sitearch}/%{name}/testing
-%{python2_sitearch}/%{name}/tests
-%{python2_sitearch}/%{name}/compat
-%{python2_sitearch}/%{name}/matrixlib
-%{python2_sitearch}/%{name}/polynomial
-%{python2_sitearch}/%{name}-*.egg-info
+%{python2_sitearch}/%{name}*
 %{_includedir}/numpy
 
 %files -n python2-numpy-f2py
 %doc doc/f2py/*.txt
 %{_mandir}/man*/*
 %{_bindir}/f2py
-%{_bindir}/f2py2
 %{_bindir}/f2py.numpy
 %{python2_sitearch}/%{name}/f2py
 
-%if 0%{?with_python3}
-%files -n python3-numpy
+%if 0%{?with_python36}
+%files -n python36u-numpy
 %license LICENSE.txt
 %doc THANKS.txt site.cfg.example
-%{python3_sitearch}/%{name}/__pycache__
-%dir %{python3_sitearch}/%{name}
-%{python3_sitearch}/%{name}/*.py*
-%{python3_sitearch}/%{name}/core
-%{python3_sitearch}/%{name}/distutils
-%{python3_sitearch}/%{name}/doc
-%{python3_sitearch}/%{name}/fft
-%{python3_sitearch}/%{name}/lib
-%{python3_sitearch}/%{name}/linalg
-%{python3_sitearch}/%{name}/ma
-%{python3_sitearch}/%{name}/random
-%{python3_sitearch}/%{name}/testing
-%{python3_sitearch}/%{name}/tests
-%{python3_sitearch}/%{name}/compat
-%{python3_sitearch}/%{name}/matrixlib
-%{python3_sitearch}/%{name}/polynomial
-%{python3_sitearch}/%{name}-*.egg-info
+%{python36_sitearch}/%{name}/__pycache__
+%dir %{python36_sitearch}/%{name}
+%{python36_sitearch}/%{name}*
 
-%files -n python3-numpy-f2py
-%{_bindir}/f2py3
-%{python3_sitearch}/%{name}/f2py
-%endif # with_python3
+%files -n python36u-numpy-f2py
+%{_bindir}/f2py3.6
+%{python36_sitearch}/%{name}/f2py
+%endif # with_python36
 
 
 %changelog
+* Mon Aug 07 2017 Frankie Dintino <fdintino@theatlantic.com> - 1:1.13.1-4
+- Build python 3.6 IUS package
+- Use wheels so package can be rewheeled into virtualenvs
+- Link against openblas instead of atlas
+
 * Thu Aug 03 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.13.1-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 
